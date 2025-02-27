@@ -17,6 +17,8 @@
       --secondary-color: #30363d;
       --border-radius: 12px;
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --code-bg: #1a1e24;
+      --error-bg: #ff4444;
     }
     * {
       box-sizing: border-box;
@@ -24,129 +26,188 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
-      padding: 15px;
+      padding: 20px;
       background-color: var(--background-color);
       color: var(--text-color);
       display: flex;
       flex-direction: row;
       height: 100vh;
+      gap: 20px;
     }
-    #sidebar {
+    #sidebar, #memories-pane {
       width: 0;
-      height: 100%;
+      height: calc(100vh - 40px);
       position: fixed;
       z-index: 20;
-      top: 0;
-      left: 0;
+      top: 20px;
       background-color: var(--secondary-color);
       overflow-x: hidden;
+      overflow-y: auto;
       transition: width 0.3s ease;
-      padding-top: 30px;
+      padding: 20px 0;
+      border-radius: var(--border-radius);
       box-shadow: var(--shadow);
     }
-    #sidebar.open {
+    #sidebar {
+      left: 20px;
+    }
+    #memories-pane {
+      right: 20px;
+    }
+    #sidebar.open, #memories-pane.open {
       width: 300px;
+      padding: 20px;
     }
-    #sidebar .chat-item {
-      padding: 12px 15px;
-      color: var(--text-color);
+    #sidebar .chat-card, #memories-pane .memory-card {
+      background-color: var(--chat-background);
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      position: relative;
       cursor: pointer;
-      transition: background-color 0.2s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    #sidebar .chat-card:hover, #memories-pane .memory-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+    #sidebar .chat-name, #memories-pane .memory-text {
       font-size: 16px;
+      color: var(--text-color);
+      margin: 0;
     }
-    #sidebar .chat-item:hover {
-      background-color: var(--primary-color);
+    #sidebar .chat-card .menu-btn, #memories-pane .memory-card .menu-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 20px;
+      padding: 5px;
+      cursor: pointer;
+      transition: color 0.2s ease;
     }
-    #sidebar .chat-item .delete-btn {
+    #sidebar .chat-card .menu-btn:hover, #memories-pane .memory-card .menu-btn:hover {
+      color: var(--primary-color);
+    }
+    #sidebar .chat-card:hover .dropdown, #memories-pane .memory-card:hover .dropdown {
+      display: block;
+    }
+    #sidebar .chat-card .dropdown, #memories-pane .memory-card .dropdown {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background-color: var(--secondary-color);
+      box-shadow: var(--shadow);
+      border-radius: 6px;
+      z-index: 10;
+    }
+    #sidebar .chat-card .dropdown button, #memories-pane .memory-card .dropdown button {
+      display: block;
+      width: 100px;
+      padding: 8px 12px;
       background: none;
       border: none;
       color: #ff4444;
+      text-align: left;
       cursor: pointer;
       font-size: 14px;
+    }
+    #sidebar .chat-card .dropdown button:hover, #memories-pane .memory-card .dropdown button:hover {
+      background-color: var(--primary-color);
     }
     #main-container {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      max-width: 1200px;
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 0 15px;
-      transition: margin-left 0.3s ease;
-      width: 100%;
+      transition: margin-left 0.3s ease, margin-right 0.3s ease;
     }
-    #main-container.shifted {
-      margin-left: 300px;
-      max-width: calc(1200px - 300px);
+    #main-container.shifted-left {
+      margin-left: 340px;
+    }
+    #main-container.shifted-right {
+      margin-right: 340px;
     }
     #controls {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
       background-color: var(--secondary-color);
-      padding: 12px;
+      padding: 15px 20px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
       position: sticky;
-      top: 15px;
+      top: 20px;
       z-index: 10;
     }
     #controls label {
       font-weight: 600;
       font-size: 14px;
       color: #8b949e;
+      margin-right: 10px;
     }
     #chat-container {
       flex-grow: 1;
       overflow-y: auto;
       border: 1px solid #30363d;
       border-radius: var(--border-radius);
-      padding: 15px;
+      padding: 20px;
       background-color: var(--chat-background);
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       box-shadow: var(--shadow);
-      max-height: calc(100vh - 210px); /* Adjusted for larger controls and input */
+      max-height: calc(100vh - 260px);
+      position: relative;
     }
     .message {
-      margin-bottom: 12px;
-      padding: 12px 16px;
-      border-radius: var(--border-radius);
+      margin-bottom: 15px;
       max-width: 85%;
-      word-wrap: break-word;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      transition: box-shadow 0.2s ease;
       font-size: 16px;
+      position: relative;
     }
-    .message:hover {
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-    }
-    .user {
-      background-color: var(--user-message-bg);
+    .message.user {
       margin-left: auto;
       text-align: right;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: slideIn 0.3s forwards;
     }
-    .assistant {
-      background-color: var(--assistant-message-bg);
+    .message.assistant {
       margin-right: auto;
       text-align: left;
     }
-    @keyframes slideIn {
+    .message-content {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      word-wrap: break-word;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .message.user .message-content {
+      background-color: var(--user-message-bg);
+    }
+    .message.assistant .message-content {
+      background-color: var(--assistant-message-bg);
+    }
+    .message span {
+      display: block;
+    }
+    @keyframes fadeIn {
       to {
         opacity: 1;
-        transform: translateY(0);
       }
     }
     .message img {
       max-width: 100%;
-      max-height: 200px;
-      object-fit: contain;
+      height: auto;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .message iframe {
+      max-width: 100%;
       border-radius: 6px;
       margin-top: 8px;
     }
@@ -191,12 +252,41 @@
       border-radius: 6px;
       overflow-x: auto;
       font-size: 14px;
+      margin: 8px 0;
     }
     .message code {
       background-color: #161b22;
       padding: 2px 5px;
       border-radius: 4px;
       font-size: 14px;
+    }
+    .code-card {
+      background-color: var(--code-bg);
+      padding: 10px;
+      border-radius: 8px;
+      position: relative;
+      margin: 8px 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .code-card pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .code-card .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      background-color: var(--primary-color);
+      color: var(--text-color);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .code-card .copy-btn:hover {
+      background-color: #1f6e2d;
     }
     .thinking, .searching {
       background-color: var(--assistant-message-bg);
@@ -214,78 +304,103 @@
     @keyframes blink {
       50% { opacity: 0.5; }
     }
+    .error-message {
+      background-color: var(--error-bg);
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      max-width: 85%;
+      margin-right: auto;
+      box-shadow: var(--shadow);
+      font-size: 15px;
+      text-align: center;
+      animation: slideIn 0.3s ease-in-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
     #input-area {
       display: flex;
       gap: 10px;
       align-items: center;
       background-color: var(--secondary-color);
-      padding: 12px;
+      padding: 15px 20px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
       position: sticky;
-      bottom: 15px;
+      bottom: 20px;
       z-index: 10;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
     #preview-area {
       display: flex;
       gap: 8px;
       align-items: center;
-      flex-wrap: wrap;
+      flex-shrink: 0;
+      max-width: 300px;
+      overflow-x: auto;
     }
-    #preview-img {
-      max-width: 50px;
-      max-height: 50px;
-      border-radius: 6px;
-    }
-    .file-preview {
+    .file-card {
       background-color: #30363d;
-      padding: 6px 10px;
+      padding: 5px;
       border-radius: 6px;
-      font-size: 13px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
+      width: 60px;
+      flex-shrink: 0;
     }
-    .file-preview span {
-      max-width: 100px;
+    .file-card span {
+      max-width: 50px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 10px;
+      text-align: center;
+    }
+    .file-card img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
     }
     #user-input {
       flex-grow: 1;
-      padding: 12px 15px;
+      padding: 10px 15px;
       background-color: #0d1117;
       color: var(--text-color);
       border: 1px solid #30363d;
       border-radius: var(--border-radius);
-      font-size: 15px;
+      font-size: 16px;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      min-width: 0;
+      min-height: 50px;
+      resize: none;
     }
     #user-input:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 5px rgba(35, 134, 54, 0.5);
     }
-    #send-button, #file-input-label, #new-chat-button, #sidebar-toggle {
-      padding: 12px 20px;
+    #send-button, #file-input-label, #new-chat-button, #sidebar-toggle, #memories-toggle {
+      padding: 10px 20px;
       border: none;
       border-radius: var(--border-radius);
       background-color: var(--primary-color);
       color: var(--text-color);
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+      flex-shrink: 0;
     }
-    #send-button:hover, #file-input-label:hover, #new-chat-button:hover, #sidebar-toggle:hover {
+    #send-button:hover, #file-input-label:hover, #new-chat-button:hover, #sidebar-toggle:hover, #memories-toggle:hover {
       background-color: #1f6e2d;
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(35, 134, 54, 0.4);
     }
-    #send-button:active, #file-input-label:active, #new-chat-button:active, #sidebar-toggle:active {
+    #send-button:active, #file-input-label:active, #new-chat-button:active, #sidebar-toggle:active, #memories-toggle:active {
       transform: translateY(0);
       box-shadow: none;
     }
@@ -295,7 +410,8 @@
     .switch-container {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      flex-shrink: 0;
     }
     .switch {
       position: relative;
@@ -346,13 +462,13 @@
       display: inline-block;
     }
     .model-select-button {
-      padding: 12px 20px;
+      padding: 10px 15px;
       background-color: var(--secondary-color);
       color: var(--text-color);
       border: 1px solid #30363d;
       border-radius: var(--border-radius);
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       transition: background-color 0.2s ease, box-shadow 0.2s ease;
     }
@@ -380,163 +496,160 @@
       width: 100%;
       text-align: left;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       transition: background-color 0.2s ease;
     }
     .model-select-dropdown button:hover {
       background-color: var(--primary-color);
     }
-
-    /* Media Queries for Responsiveness */
     @media (max-width: 1200px) {
       #main-container {
         max-width: 100%;
-        padding: 0 10px;
       }
-      #main-container.shifted {
-        margin-left: 300px;
-        max-width: calc(100% - 300px);
+      #main-container.shifted-left {
+        margin-left: 340px;
+      }
+      #main-container.shifted-right {
+        margin-right: 340px;
       }
     }
-
     @media (max-width: 768px) {
       body {
-        padding: 10px;
+        padding: 15px;
+        gap: 15px;
       }
       #sidebar.open {
-        width: 250px;
+        width: 280px;
       }
-      #main-container.shifted {
-        margin-left: 250px;
-        max-width: calc(100% - 250px);
+      #memories-pane.open {
+        width: 280px;
       }
-      #controls {
-        gap: 10px;
-        padding: 10px;
+      #main-container.shifted-left {
+        margin-left: 310px;
       }
-      #chat-container {
-        max-height: calc(100vh - 190px);
-        padding: 10px;
-      }
-      .message {
-        max-width: 90%;
-        padding: 10px 14px;
-        font-size: 15px;
-      }
-      .message img {
-        max-height: 150px;
-      }
-      #input-area {
-        gap: 8px;
-        padding: 10px;
-      }
-      #user-input {
-        padding: 10px 12px;
-        font-size: 14px;
-      }
-      #send-button, #file-input-label, #new-chat-button, #sidebar-toggle {
-        padding: 10px 16px;
-        font-size: 14px;
-      }
-      .switch {
-        width: 40px;
-        height: 20px;
-      }
-      .slider:before {
-        height: 14px;
-        width: 14px;
-      }
-      input:checked + .slider:before {
-        transform: translateX(20px);
-      }
-      .model-select-button {
-        padding: 10px 16px;
-        font-size: 14px;
-      }
-      .model-select-dropdown {
-        min-width: 140px;
-      }
-      .model-select-dropdown button {
-        padding: 8px 12px;
-        font-size: 14px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 5px;
-      }
-      #sidebar.open {
-        width: 100%;
-      }
-      #main-container {
-        padding: 0;
-      }
-      #main-container.shifted {
-        margin-left: 0;
-        max-width: 100%;
-        display: none;
+      #main-container.shifted-right {
+        margin-right: 310px;
       }
       #controls {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 8px;
-        gap: 8px;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 12px 15px;
       }
       #chat-container {
         max-height: calc(100vh - 240px);
-        padding: 8px;
       }
-      .message {
-        max-width: 95%;
-        padding: 8px 12px;
-        font-size: 14px;
+      #input-area {
+        gap: 10px;
+        padding: 12px 15px;
       }
-      .message img {
-        max-height: 120px;
+    }
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+        flex-direction: column;
+        gap: 10px;
+      }
+      #sidebar, #memories-pane {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 1000;
+        transition: width 0.3s ease;
+      }
+      #sidebar {
+        left: 0;
+      }
+      #memories-pane {
+        right: 0;
+      }
+      #sidebar.open, #memories-pane.open {
+        width: 100%;
+        padding: 15px;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      #main-container {
+        margin: 0;
+        padding-top: 60px;
+      }
+      #main-container.shifted-left, #main-container.shifted-right {
+        margin-left: 0;
+        margin-right: 0;
+        opacity: 0.2;
+      }
+      #controls {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        gap: 10px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10;
+        border-radius: 0;
+      }
+      #controls label {
+        display: none;
+      }
+      #chat-container {
+        max-height: calc(100vh - 200px);
+        padding: 10px;
       }
       #input-area {
         flex-direction: column;
         align-items: stretch;
-        gap: 6px;
-        padding: 8px;
+        gap: 8px;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 0;
       }
       #user-input {
         width: 100%;
-        padding: 8px 10px;
-        font-size: 13px;
+        min-height: 40px;
+        padding: 8px 12px;
+        font-size: 14px;
       }
       #preview-area {
+        max-width: 100%;
         justify-content: center;
       }
-      #send-button, #file-input-label, #new-chat-button, #sidebar-toggle {
+      .file-card {
+        width: 50px;
+      }
+      .file-card img {
+        width: 30px;
+        height: 30px;
+      }
+      .file-card span {
+        font-size: 9px;
+      }
+      #send-button, #file-input-label, #new-chat-button, #sidebar-toggle, #memories-toggle {
+        padding: 8px 16px;
+        font-size: 12px;
         width: 100%;
-        padding: 10px;
-        font-size: 13px;
       }
       .switch-container {
-        justify-content: space-between;
-        width: 100%;
+        justify-content: center;
       }
-      .model-select-button {
-        width: 100%;
-        padding: 10px;
-        font-size: 13px;
-      }
-      .model-select-dropdown {
-        width: 100%;
-        min-width: 0;
+      .switch-label {
+        font-size: 12px;
       }
     }
   </style>
 </head>
 <body>
   <div id="sidebar"></div>
+  <div id="memories-pane"></div>
   <div id="main-container">
     <div id="controls">
       <button id="sidebar-toggle">☰ Chat History</button>
-      <label for="model-select">Choose Model:</label>
       <div class="model-select-container">
+        <label for="model-select-button">Model:</label>
         <button class="model-select-button" id="model-select-button">Pro (Advanced)</button>
         <div class="model-select-dropdown" id="model-select-dropdown">
           <button data-value="openai-large">Pro (Advanced)</button>
@@ -544,12 +657,13 @@
         </div>
       </div>
       <button id="new-chat-button">New Chat</button>
+      <button id="memories-toggle">🧠 Memories</button>
     </div>
     <div id="chat-container"></div>
     <div id="input-area">
-      <label for="file-input" id="file-input-label">Upload Files</label>
+      <label for="file-input" id="file-input-label">Upload</label>
       <input type="file" id="file-input" accept="image/*, .txt, .pdf, .doc, .docx, .ppt, .pptx" multiple>
-      <input type="text" id="user-input" placeholder="Type your message...">
+      <textarea id="user-input" placeholder="Type your message..."></textarea>
       <div id="preview-area"></div>
       <div class="switch-container">
         <label class="switch-label">Web Search</label>
@@ -564,36 +678,121 @@
 
   <script>
     let conversation = [];
-    let selectedFiles = [];
-    let selectedModel = 'openai-large';
+    let memories = JSON.parse(localStorage.getItem('memories')) || [];
     let sources = [];
     let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
     let currentChatIndex = -1;
+    const MAX_CHARS = 512000;
+    let selectedModel = 'openai-large';
+    let userLanguage = 'Unknown';
+    let userCity = 'Unknown';
+    let locationFetched = false;
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 
-    function addMessageToChat(role, content) {
+    function addMessageToChat(role, content, isNew = true) {
       const messageDiv = document.createElement('div');
       messageDiv.classList.add('message', role);
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.classList.add('message-content');
+
       if (typeof content === 'string') {
-        messageDiv.innerHTML = parseLatexAndMarkdown(content);
+        const codeRegex = /```([\s\S]*?)```/g;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = codeRegex.exec(content)) !== null) {
+          const preText = content.slice(lastIndex, match.index);
+          if (preText) {
+            const preLines = parseLatexAndMarkdown(preText).split('<br>');
+            preLines.forEach((line, index) => {
+              const lineSpan = document.createElement('span');
+              lineSpan.innerHTML = line;
+              if (isNew) {
+                lineSpan.style.opacity = '0';
+                lineSpan.style.animation = `fadeIn 0.3s forwards`;
+                lineSpan.style.animationDelay = `${index * 0.1}s`;
+              } else {
+                lineSpan.style.opacity = '1';
+              }
+              contentDiv.appendChild(lineSpan);
+              if (index < preLines.length - 1) contentDiv.appendChild(document.createElement('br'));
+            });
+          }
+
+          const codeCard = document.createElement('div');
+          codeCard.classList.add('code-card');
+          const codeContent = match[1].trim();
+          const pre = document.createElement('pre');
+          pre.textContent = codeContent;
+          codeCard.appendChild(pre);
+
+          const copyBtn = document.createElement('button');
+          copyBtn.classList.add('copy-btn');
+          copyBtn.textContent = 'Copy';
+          copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeContent).then(() => {
+              copyBtn.textContent = 'Copied!';
+              setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+            });
+          });
+          codeCard.appendChild(copyBtn);
+
+          contentDiv.appendChild(codeCard);
+          lastIndex = codeRegex.lastIndex;
+        }
+
+        const remainingText = content.slice(lastIndex);
+        if (remainingText) {
+          const lines = parseLatexAndMarkdown(remainingText).split('<br>');
+          lines.forEach((line, index) => {
+            const lineSpan = document.createElement('span');
+            lineSpan.innerHTML = line;
+            if (isNew) {
+              lineSpan.style.opacity = '0';
+              lineSpan.style.animation = `fadeIn 0.3s forwards`;
+              lineSpan.style.animationDelay = `${index * 0.1}s`;
+            } else {
+              lineSpan.style.opacity = '1';
+            }
+            contentDiv.appendChild(lineSpan);
+            if (index < lines.length - 1) contentDiv.appendChild(document.createElement('br'));
+          });
+        }
       } else {
         content.forEach(item => {
           if (item.type === 'text') {
             const textSpan = document.createElement('span');
             textSpan.innerHTML = parseLatexAndMarkdown(item.text);
-            messageDiv.appendChild(textSpan);
+            if (isNew) {
+              textSpan.style.opacity = '0';
+              textSpan.style.animation = `fadeIn 0.3s forwards`;
+            } else {
+              textSpan.style.opacity = '1';
+            }
+            contentDiv.appendChild(textSpan);
           } else if (item.type === 'image_url') {
             const img = document.createElement('img');
             img.src = item.image_url.url;
-            messageDiv.appendChild(img);
+            contentDiv.appendChild(img);
           }
         });
       }
+      messageDiv.appendChild(contentDiv);
       document.getElementById('chat-container').appendChild(messageDiv);
       messageDiv.scrollIntoView({ behavior: 'smooth' });
       MathJax.Hub.Queue(["Typeset", MathJax.Hub, messageDiv]);
       return messageDiv;
+    }
+
+    function addErrorMessage(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.classList.add('error-message');
+      errorDiv.innerHTML = `<span>${message}</span>`;
+      document.getElementById('chat-container').appendChild(errorDiv);
+      errorDiv.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => errorDiv.remove(), 5000);
     }
 
     function addThinkingMessage() {
@@ -618,22 +817,6 @@
       if (loadingMessage) loadingMessage.remove();
     }
 
-    function createTypingAnimation(text) {
-      const container = document.createElement('div');
-      text.split('').forEach((char, index) => {
-        const span = document.createElement('span');
-        span.textContent = char;
-        span.classList.add('typing-char');
-        span.style.animationDelay = `${index * 0.0005}s`;
-        container.appendChild(span);
-      });
-      setTimeout(() => {
-        container.innerHTML = parseLatexAndMarkdown(text);
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, container]);
-      }, text.length * 0.0005 * 1000 + 100);
-      return container;
-    }
-
     function parseLatexAndMarkdown(text) {
       const sourceRegex = /\[(\d+)\]: \[([^\[\]]*?)\]\((https?:\/\/[^\s)]+?)\)/g;
       sources = [];
@@ -641,8 +824,7 @@
       while ((match = sourceRegex.exec(text)) !== null) {
         sources[parseInt(match[1])] = { text: match[2], url: match[3] };
       }
-      let latexText = text;
-      latexText = latexText
+      let latexText = text
         .replace(/\\\((.*?)\\\)/g, '$$$1$$')
         .replace(/\$(.*?)\$/g, (match, p1) => `$$${p1.replace(/\\(?![()])/g, '\\\\')}$$`);
       return latexText
@@ -659,13 +841,12 @@
         .replace(/\[([^\[\]]*?)\]\((https?:\/\/[^\s)]+?)\)/g, '<a href="$2" target="_blank">$1</a>')
         .replace(/\[(\d+)\]/g, (match, number) => {
           const source = sources[parseInt(number)];
-          return source ? `<sup><a href="${source.url}" target="_blank">${number}</a></sup>` : match;
+          return source && source.url.startsWith('http') ? `<sup><a href="${source.url}" target="_blank">${number}</a></sup>` : '';
         })
         .replace(/^- (.*)$/gim, '<li>$1</li>')
         .replace(/<\/li>\n<li>/g, '</li><li>')
         .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>')
-        .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/\n{2,}/g, '<br>')
         .replace(/\n/g, '<br>');
     }
 
@@ -673,19 +854,104 @@
       return Math.floor(Math.random() * 1000000);
     }
 
+    async function detectLanguage(text) {
+      if (/[äöüß]/.test(text)) return 'de';
+      if (/[áéíóúñ]/.test(text)) return 'es';
+      if (/[àâçéèêîôûù]/.test(text)) return 'fr';
+      return 'en';
+    }
+
+    async function getUserCity() {
+      return new Promise((resolve) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+                const data = await response.json();
+                resolve(data.address.city || data.address.town || 'Unknown');
+              } catch (error) {
+                console.error('Geolocation fetch error:', error);
+                resolve('Unknown');
+              }
+            },
+            () => resolve('Unknown'),
+            { timeout: 5000, maximumAge: 60000 }
+          );
+        } else {
+          resolve('Unknown');
+        }
+      });
+    }
+
+    async function updateUserInfo() {
+      if (!locationFetched) {
+        const firstMessage = document.getElementById('user-input').value.trim() || conversation[0]?.content || ' ';
+        userLanguage = await detectLanguage(firstMessage);
+        userCity = await getUserCity();
+        locationFetched = true;
+      }
+    }
+
+    async function updateMemoriesInBackground() {
+      const conversationText = conversation.slice(-5).map(m => typeof m.content === 'string' ? m.content : m.content[0]?.text || '').join('\n'); // Limit to last 5 messages
+      const existingMemories = memories.map(m => m.content).join('\n');
+
+      const requestBody = {
+        messages: [
+          {
+            "role": "system",
+            "content": `Update the memories list based on the conversation. Use concise key facts (e.g., "Name: Alice", "Wants to go Paris"). Add, edit, or remove entries as needed. Return plain text, one memory per line.\n\nConversation:\n${conversationText}\n\nCurrent Memories:\n${existingMemories}`
+          }
+        ],
+        model: 'openai',
+        seed: getRandomSeed(),
+        private: true
+      };
+
+      console.log('Memory AI Request Body:', JSON.stringify(requestBody));
+
+      try {
+        const response = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const newMemoriesText = await response.text();
+        console.log('Memory AI Response:', newMemoriesText);
+
+        const newMemories = newMemoriesText.trim().split('\n').filter(line => line.trim() !== '');
+        memories = newMemories.map(content => ({ content, timestamp: new Date().toISOString() }));
+        localStorage.setItem('memories', JSON.stringify(memories));
+        updateMemoriesPane();
+      } catch (error) {
+        console.error('Background memory update failed:', error);
+        // Fallback: keep current memories unchanged
+      }
+    }
+
     async function tryWebSearch(userText, maxAttempts = 3, isYouTube = false) {
       let attempts = 0;
       let searchResult = null;
       const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const language = await detectLanguage(userText);
 
       while (attempts < maxAttempts) {
         attempts++;
         const seed = getRandomSeed();
-        console.log(`Web-Suchversuch ${attempts} mit Seed ${seed}...`);
         try {
-          const systemPrompt = isYouTube
-            ? `Search YouTube for ONE highly relevant, working, and embeddable video related to "${userText}". If the query mentions a film, TV show, or similar media, prioritize an official trailer or overview from a reputable source (e.g., studio channel). Otherwise, find a recent, high-quality video (e.g., tutorial, official clip, or overview) from a trusted channel. Verify the video exists and is accessible. Return the result in this exact format: {"youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID"}. If no suitable video is found, return {"youtube_url": null}.`
-            : `Conduct a comprehensive and detailed web research for the given prompt. Provide current information (as of ${currentDate} or later, if available), including precise facts, background details, and relevant insights. Ensure each fact is accompanied by a source URL from trustworthy, up-to-date references.`;
+          let systemPrompt;
+          if (isYouTube) {
+            systemPrompt = `Search YouTube for ONE highly relevant, working, and embeddable video related to "${userText}". Prioritize videos from famous channels or with high view counts. Return the result in this exact format: {"youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID"}. If no suitable video is found, return {"youtube_url": null}.`;
+          } else {
+            systemPrompt = `Conduct a comprehensive and detailed web research for the given prompt in the language detected as "${language}". Provide current information (as of ${currentDate} or later, if available), including precise facts, background details, and relevant insights. Ensure each fact is accompanied by a source URL from trustworthy, up-to-date references in the format [NUMBER]: [description](https://source.url). Return the result as plain text.`;
+          }
           
           const searchResponse = await fetch('https://text.pollinations.ai/', {
             method: 'POST',
@@ -697,17 +963,15 @@
               ],
               model: 'searchgpt',
               seed: seed,
-              jsonMode: true,
+              jsonMode: isYouTube,
               private: true
             })
           });
-          searchResult = await searchResponse.json();
-          console.log(`Ergebnis Versuch ${attempts} (YouTube: ${isYouTube}):`, searchResult);
+          searchResult = await searchResponse[isYouTube ? 'json' : 'text']();
 
           if (searchResult.error) {
-            console.log(`Fehler in Versuch ${attempts}: ${searchResult.message}`);
             if (attempts === maxAttempts) {
-              return { error: true, message: `Web search failed after ${maxAttempts} attempts: ${searchResult.message || 'undefined'}` };
+              return { error: true, message: `Search failed after ${maxAttempts} attempts: ${searchResult.message || 'undefined'}` };
             }
           } else if (isYouTube && searchResult.youtube_url) {
             const videoIdMatch = searchResult.youtube_url.match(/v=([^&]+)/);
@@ -715,29 +979,24 @@
               try {
                 const response = await fetch(`https://www.youtube.com/oembed?url=${searchResult.youtube_url}`, { method: 'HEAD' });
                 if (response.ok) {
+                  console.log(`YouTube Search Result:`, searchResult);
                   return { error: false, result: searchResult };
-                } else {
-                  console.log(`Video nicht verfügbar in Versuch ${attempts}: ${searchResult.youtube_url}`);
                 }
-              } catch (e) {
-                console.log(`Validierung fehlgeschlagen in Versuch ${attempts}: ${e.message}`);
-              }
+              } catch (e) {}
             }
-          } else if (isYouTube && searchResult.youtube_url === null && attempts < maxAttempts) {
-            console.log(`Kein passendes Video gefunden in Versuch ${attempts}, erneuter Versuch...`);
           } else if (!isYouTube) {
+            console.log(`Web Search Result:`, searchResult);
             return { error: false, result: searchResult };
           }
           await new Promise(resolve => setTimeout(resolve, 500));
         } catch (error) {
-          console.error(`Network error in attempt ${attempts}:`, error);
           if (attempts === maxAttempts) {
-            return { error: true, message: `Web search failed after ${maxAttempts} attempts: Network error` };
+            return { error: true, message: `Search failed after ${maxAttempts} attempts: Network error` };
           }
           await new Promise(resolve => setTimeout(resolve, 500));
         }
       }
-      return { error: true, message: `No valid YouTube video found after ${maxAttempts} attempts` };
+      return { error: true, message: `No valid ${isYouTube ? 'YouTube video' : 'content'} found after ${maxAttempts} attempts` };
     }
 
     async function extractTextFromPDF(file) {
@@ -751,36 +1010,60 @@
           const pageText = textContent.items.map(item => item.str).join(' ');
           fullText += `--- Page ${pageNum} ---\n${pageText}\n\n`;
         }
-        console.log(`Extracted text from ${pdf.numPages} pages:`, fullText);
         return fullText || 'No text could be extracted from the PDF.';
       } catch (error) {
-        console.error('Error extracting PDF text:', error);
         return 'Error: Could not extract text from the PDF.';
       }
     }
 
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(file);
+      });
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function generateChatName(messages) {
-      if (!messages.length) return 'Empty Chat';
-      const conversationText = messages.map(m => typeof m.content === 'string' ? m.content : m.content[0]?.text || '').join(' ');
+      if (!messages.length) return 'New Chat';
+      const conversationText = messages.slice(-3).map(m => typeof m.content === 'string' ? m.content : m.content[0]?.text || '').join(' '); // Limit to last 3 messages
+      const language = await detectLanguage(conversationText);
       try {
         const response = await fetch('https://text.pollinations.ai/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             messages: [
-              {"role": "system", "content": "Generate a concise chat name (1-3 words) summarizing this conversation. or simply name the main topic."},
-              {"role": "user", "content": conversationText.slice(0, 2000)}
+              {"role": "system", "content": `Generate a concise chat name (1-3 words) summarizing this conversation, in ${language}.`},
+              {"role": "user", "content": conversationText.slice(0, 500)} // Limit to 500 chars
             ],
             model: 'openai',
             seed: getRandomSeed(),
             private: true
           })
         });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Chat name generation failed:', errorText);
+          return 'New Chat'; // Fallback on error
+        }
+
         const name = await response.text();
-        return name.trim() || 'Unnamed Chat';
+        return name.trim() || 'New Chat';
       } catch (error) {
-        console.error('Error generating chat name:', error);
-        return 'Unnamed Chat';
+        console.error('Chat name generation error:', error);
+        return 'New Chat'; // Fallback on error
       }
     }
 
@@ -789,15 +1072,32 @@
       sidebar.innerHTML = '';
       const recentChats = chatHistory.slice(-15).reverse();
       recentChats.forEach((chat, index) => {
-        const chatItem = document.createElement('div');
-        chatItem.classList.add('chat-item');
-        chatItem.innerHTML = `<span>${chat.name}</span><button class="delete-btn">✖</button>`;
-        chatItem.addEventListener('click', (e) => {
-          if (e.target.className !== 'delete-btn') {
+        const chatCard = document.createElement('div');
+        chatCard.classList.add('chat-card');
+        chatCard.innerHTML = `
+          <p class="chat-name">${chat.name}</p>
+          <button class="menu-btn">⋮</button>
+          <div class="dropdown">
+            <button class="delete-btn">Delete</button>
+          </div>
+        `;
+        const menuBtn = chatCard.querySelector('.menu-btn');
+        const dropdown = chatCard.querySelector('.dropdown');
+        const deleteBtn = chatCard.querySelector('.delete-btn');
+
+        chatCard.addEventListener('click', (e) => {
+          if (e.target !== menuBtn && e.target !== deleteBtn) {
             loadChat(chat.messages, chatHistory.length - 1 - index);
           }
         });
-        chatItem.querySelector('.delete-btn').addEventListener('click', () => {
+
+        menuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
           chatHistory.splice(chatHistory.length - 1 - index, 1);
           localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
           updateChatHistory();
@@ -807,7 +1107,54 @@
             currentChatIndex = -1;
           }
         });
-        sidebar.appendChild(chatItem);
+
+        document.addEventListener('click', (e) => {
+          if (!chatCard.contains(e.target)) {
+            dropdown.style.display = 'none';
+          }
+        });
+
+        sidebar.appendChild(chatCard);
+      });
+    }
+
+    function updateMemoriesPane() {
+      const memoriesPane = document.getElementById('memories-pane');
+      memoriesPane.innerHTML = '';
+      const recentMemories = memories.slice(-15).reverse();
+      recentMemories.forEach((memory, index) => {
+        const memoryCard = document.createElement('div');
+        memoryCard.classList.add('memory-card');
+        memoryCard.innerHTML = `
+          <p class="memory-text">${memory.content}</p>
+          <button class="menu-btn">⋮</button>
+          <div class="dropdown">
+            <button class="delete-btn">Delete</button>
+          </div>
+        `;
+        const menuBtn = memoryCard.querySelector('.menu-btn');
+        const dropdown = memoryCard.querySelector('.dropdown');
+        const deleteBtn = memoryCard.querySelector('.delete-btn');
+
+        menuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          memories.splice(memories.length - 1 - index, 1);
+          localStorage.setItem('memories', JSON.stringify(memories));
+          updateMemoriesPane();
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!memoryCard.contains(e.target)) {
+            dropdown.style.display = 'none';
+          }
+        });
+
+        memoriesPane.appendChild(memoryCard);
       });
     }
 
@@ -815,159 +1162,218 @@
       conversation = messages.slice();
       currentChatIndex = index;
       document.getElementById('chat-container').innerHTML = '';
-      conversation.forEach(msg => addMessageToChat(msg.role, msg.content));
-      document.getElementById('main-container').style.display = 'flex';
+      conversation.forEach(msg => addMessageToChat(msg.role, msg.content, false));
       document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('main-container').classList.remove('shifted-left');
     }
 
     async function saveOrUpdateChat() {
       if (conversation.length) {
         const chatName = await generateChatName(conversation);
         if (currentChatIndex === -1) {
-          chatHistory.push({ name: chatName, messages: conversation.slice() });
+          chatHistory.push({ name: chatName, messages: conversation.slice(), files: [] });
           currentChatIndex = chatHistory.length - 1;
         } else {
-          chatHistory[currentChatIndex] = { name: chatName, messages: conversation.slice() };
+          chatHistory[currentChatIndex] = { name: chatName, messages: conversation.slice(), files: [] };
         }
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
         updateChatHistory();
       }
     }
 
+    function calculateTextSize(messages) {
+      let textContent = '';
+      messages.forEach(msg => {
+        if (typeof msg.content === 'string') {
+          textContent += msg.content;
+        } else if (Array.isArray(msg.content)) {
+          msg.content.forEach(item => {
+            if (item.type === 'text') {
+              textContent += item.text;
+            }
+          });
+        }
+      });
+      return textContent.length;
+    }
+
+    function isMemoryWorthy(text) {
+      return text.length > 10 && !text.startsWith('Uploaded file:') && !text.includes('http');
+    }
+
     document.getElementById('sidebar-toggle').addEventListener('click', () => {
       const sidebar = document.getElementById('sidebar');
+      const memoriesPane = document.getElementById('memories-pane');
       const mainContainer = document.getElementById('main-container');
+      
+      if (memoriesPane.classList.contains('open')) {
+        memoriesPane.classList.remove('open');
+        mainContainer.classList.remove('shifted-right');
+      }
+      
       sidebar.classList.toggle('open');
-      mainContainer.classList.toggle('shifted');
-      if (window.innerWidth <= 480) {
-        mainContainer.style.display = sidebar.classList.contains('open') ? 'none' : 'flex';
+      if (sidebar.classList.contains('open')) {
+        mainContainer.classList.add('shifted-left');
+      } else {
+        mainContainer.classList.remove('shifted-left');
       }
     });
 
-    document.getElementById('file-input').addEventListener('change', async (event) => {
+    document.getElementById('memories-toggle').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+      const memoriesPane = document.getElementById('memories-pane');
+      const mainContainer = document.getElementById('main-container');
+      
+      if (sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        mainContainer.classList.remove('shifted-left');
+      }
+      
+      memoriesPane.classList.toggle('open');
+      if (memoriesPane.classList.contains('open')) {
+        mainContainer.classList.add('shifted-right');
+      } else {
+        mainContainer.classList.remove('shifted-right');
+      }
+    });
+
+    document.getElementById('file-input').addEventListener('change', (event) => {
       const files = Array.from(event.target.files);
       if (!files.length) return;
 
       const previewArea = document.getElementById('preview-area');
       previewArea.innerHTML = '';
 
-      for (const file of files) {
+      files.forEach(file => {
+        const fileCard = document.createElement('div');
+        fileCard.classList.add('file-card');
+        fileCard.innerHTML = `<span>${file.name}</span>`;
         if (file.type.startsWith('image/')) {
           const reader = new FileReader();
           reader.onload = function(e) {
-            const fileData = { type: 'image', data: e.target.result, name: file.name };
-            selectedFiles.push(fileData);
             const img = document.createElement('img');
-            img.id = 'preview-img';
-            img.src = fileData.data;
-            previewArea.appendChild(img);
+            img.src = e.target.result;
+            fileCard.appendChild(img);
           };
           reader.readAsDataURL(file);
-        } else if (file.type === 'application/pdf') {
-          const text = await extractTextFromPDF(file);
-          const fileData = { type: 'text', data: text, name: file.name };
-          selectedFiles.push(fileData);
-          const filePreview = document.createElement('div');
-          filePreview.classList.add('file-preview');
-          filePreview.innerHTML = `<span>${file.name}</span>`;
-          previewArea.appendChild(filePreview);
-        } else {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const fileData = { type: 'text', data: e.target.result, name: file.name };
-            selectedFiles.push(fileData);
-            const filePreview = document.createElement('div');
-            filePreview.classList.add('file-preview');
-            filePreview.innerHTML = `<span>${file.name}</span>`;
-            previewArea.appendChild(filePreview);
-          };
-          reader.readAsText(file);
         }
-      }
-      event.target.value = '';
+        previewArea.appendChild(fileCard);
+      });
     });
 
     document.getElementById('send-button').addEventListener('click', async () => {
       const userText = document.getElementById('user-input').value.trim();
       const webSearchEnabled = document.getElementById('web-search-toggle').checked;
-      if (!userText && selectedFiles.length === 0) return;
+      const fileInput = document.getElementById('file-input');
+      const files = fileInput.files ? Array.from(fileInput.files) : [];
 
-      if (selectedFiles.length > 0) {
-        selectedFiles.forEach(file => {
-          if (file.type === 'image') {
-            const imageMessage = {"role": "user", "content": [{"type": "image_url", "image_url": {"url": file.data}}]};
+      console.log('Send button clicked. Text:', userText, 'Files:', files.length);
+
+      if (!userText && files.length === 0) {
+        console.log('No text or files to send. Aborting.');
+        return;
+      }
+
+      let totalTextChars = calculateTextSize(conversation);
+      console.log('Initial text size:', totalTextChars);
+
+      if (files.length > 0) {
+        for (const file of files) {
+          console.log('Processing file:', file.name);
+          if (file.type.startsWith('image/')) {
+            const dataUrl = await readFileAsDataURL(file);
+            const imageMessage = {"role": "user", "content": [{"type": "image_url", "image_url": {"url": dataUrl}}]};
             addMessageToChat('user', imageMessage.content);
             conversation.push(imageMessage);
-          } else {
+            console.log('Added image to conversation:', file.name);
+          } else if (file.type === 'application/pdf') {
+            const text = await extractTextFromPDF(file);
+            totalTextChars += text.length;
             addMessageToChat('user', `Uploaded file: ${file.name}`);
-            conversation.push({"role": "user", "content": `Uploaded file: ${file.name}\nContent:\n${file.data}`});
+            conversation.push({"role": "user", "content": `Uploaded file: ${file.name}\nContent:\n${text}`});
+            console.log('Added PDF to conversation:', file.name);
+          } else {
+            const text = await readFileAsText(file);
+            totalTextChars += text.length;
+            addMessageToChat('user', `Uploaded file: ${file.name}`);
+            conversation.push({"role": "user", "content": `Uploaded file: ${file.name}\nContent:\n${text}`});
+            console.log('Added text file to conversation:', file.name);
           }
-        });
-      }
-      if (userText) {
-        const textMessage = {"role": "user", "content": userText};
-        addMessageToChat('user', userText);
-        conversation.push(textMessage);
+        }
       }
 
+      if (userText) {
+        const textMessage = {"role": "user", "content": userText};
+        totalTextChars += userText.length;
+        addMessageToChat('user', userText);
+        conversation.push(textMessage);
+        console.log('Added text to conversation:', userText);
+      }
+
+      if (totalTextChars > MAX_CHARS) {
+        console.log('Text size exceeds limit:', totalTextChars);
+        addErrorMessage('Oops! The conversation text exceeds the 512,000 character limit. Please start a new chat.');
+        return;
+      }
+
+      console.log('Clearing input and preview area');
       document.getElementById('user-input').value = '';
       document.getElementById('preview-area').innerHTML = '';
-      selectedFiles = [];
+      fileInput.value = '';
+
+      // Background memory update
+      updateMemoriesInBackground();
 
       let systemMessage = null;
       const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      if (webSearchEnabled && userText) {
-        const searchLoadingMessage = addSearchLoadingMessage();
+      const isMathRequest = /\d\s*[\+\-\*\/]\s*\d|\b(math|calculate)\b/i.test(userText);
+      const memoryContext = memories.map(m => m.content).join('\n');
+      const memoryInstructions = `I can memorize key details you share across all chats (e.g., "Name: XX", "Wants to go XX on XX.XX.XXXX") and use them to assist you better. You can ask me to forget specific memories or all memories by saying "forget [specific detail]" or "forget everything". View or delete them manually via the Memories tab (🧠).`;
+
+      if (webSearchEnabled || isMathRequest) {
+        const searchLoadingMessage = isMathRequest ? addThinkingMessage() : addSearchLoadingMessage();
         
-        let youtubeSearchResult = await tryWebSearch(userText, 3, true);
-        const webSearchResult = await tryWebSearch(userText, 3, false);
+        console.log('Starting web search');
+        let youtubeSearchResult = webSearchEnabled ? await tryWebSearch(userText, 3, true) : { error: true };
+        const webSearchResult = webSearchEnabled ? await tryWebSearch(userText, 3, false) : { error: true };
 
         if (youtubeSearchResult.error || !youtubeSearchResult.result.youtube_url) {
-          console.log('YouTube search failed, falling back to trailer-specific search...');
-          youtubeSearchResult = await tryWebSearch(`trailer of ${userText}`, 3, true);
+          youtubeSearchResult = webSearchEnabled ? await tryWebSearch(`tutorial about ${userText}`, 3, true) : { error: true };
         }
 
         removeLoadingMessage(searchLoadingMessage);
 
         let combinedResults = '';
         let youtubeEmbed = '';
-        if (webSearchResult.error) {
-          combinedResults += `Web search failed: ${webSearchResult.message}\n`;
-        } else {
-          combinedResults += `Web search results: ${JSON.stringify(webSearchResult.result)}\n`;
+        if (!webSearchResult.error) {
+          combinedResults += `${webSearchResult.result}\n`;
         }
-        if (youtubeSearchResult.error) {
-          combinedResults += `YouTube search failed: ${youtubeSearchResult.message}`;
-        } else if (youtubeSearchResult.result.youtube_url) {
+        if (!youtubeSearchResult.error && youtubeSearchResult.result.youtube_url) {
           const videoIdMatch = youtubeSearchResult.result.youtube_url.match(/v=([^&]+)/);
           if (videoIdMatch && videoIdMatch[1]) {
             const videoId = videoIdMatch[1];
             youtubeEmbed = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
-            combinedResults += `Relevant YouTube video: ${youtubeSearchResult.result.youtube_url}`;
-          } else {
-            combinedResults += `Invalid YouTube URL format returned: ${youtubeSearchResult.result.youtube_url}`;
+            combinedResults += `\n${youtubeEmbed}\nRelevant YouTube video: ${youtubeSearchResult.result.youtube_url}\n`;
           }
         }
 
-        if (webSearchResult.error && youtubeSearchResult.error) {
-          addMessageToChat('assistant', combinedResults);
-        } else {
-          systemMessage = {
-            "role": "system",
-            "content": `You have access to the following search results: ${combinedResults}. Use this information to answer the user's question with current details (as of ${currentDate} or later, if available). Mark nearly every fact with a compact source reference as "[Q[NUMBER]]" (e.g., "Tesla produced 10,000 Cybertrucks in 2025 Q2[Q1]"). Number sources sequentially. Ensure the [Q[NUMBER]] in the text directly links to the corresponding URL in the sources list (example: [Q1](https://tesla.com/news)). If a YouTube video is available, include it in the response using this exact embed code:\n${youtubeEmbed || 'No video available'}\nFor mathematical questions, perform step-by-step calculations, verify each step, and double-check the final result for accuracy before responding. Use LaTeX notation (e.g., $$...$$) for equations. Ensure the response is tailored to the user's request and based on trustworthy sources.`
-          };
-        }
+        systemMessage = {
+          "role": "system",
+          "content": isMathRequest
+            ? `${memoryInstructions}\nAnswer the user's math question in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is explicitly requested. Use LaTeX notation (e.g., $$...$$) for all equations, ensuring proper rendering with no extra spacing or paragraphs around math. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
+            : `${memoryInstructions}\nYou have access to the following search results: ${combinedResults}. Use this information to answer the user's question with current details (as of ${currentDate} or later, if available). Mark nearly every fact with a compact source reference as "[Q[NUMBER]]" (e.g., "Tesla produced 10,000 Cybertrucks in 2025 Q2[Q1]"). Number sources sequentially. Ensure the [Q[NUMBER]] in the text directly links to the corresponding URL in the sources list (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
+        };
       } else {
         systemMessage = {
           "role": "system",
-          "content": `Answer the user's question. If needed use headings (###) and lists (-). If sources are available or relevant, mark facts with compact references as [Q[NUMBER]] (e.g., "[Q1]"). Ensure the [Number] in the text directly links to the corresponding URL (example: [Q1](https://tesla.com/news)). For mathematical questions, perform step-by-step calculations, verify each step, and double-check the final result for accuracy before responding. Use LaTeX notation (e.g., $$...$$) for equations.`
+          "content": `${memoryInstructions}\nAnswer the user's question. If needed use headings (###) and lists (-). If sources are available or relevant, mark facts with compact references as [Q[NUMBER]] (e.g., "[Q1]"). Ensure the [Number] in the text directly links to the corresponding URL (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
         };
       }
 
+      console.log('Sending AI request');
       const thinkingMessage = addThinkingMessage();
       try {
         const messages = systemMessage ? [systemMessage, ...conversation] : conversation;
-        console.log('Messages sent to model:', messages);
         const response = await fetch('https://text.pollinations.ai/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -980,31 +1386,46 @@
         });
         const data = await response.text();
         removeLoadingMessage(thinkingMessage);
-        const assistantMessageDiv = addMessageToChat('assistant', '');
-        const typingContainer = createTypingAnimation(data);
-        assistantMessageDiv.appendChild(typingContainer);
+        addMessageToChat('assistant', data);
         conversation.push({"role": "assistant", "content": data});
         await saveOrUpdateChat();
+        console.log('AI response received and added:', data);
+
+        if (userText.toLowerCase().includes('forget everything')) {
+          memories = [];
+          localStorage.setItem('memories', JSON.stringify(memories));
+          updateMemoriesPane();
+        } else if (userText.toLowerCase().includes('forget')) {
+          const toForget = userText.toLowerCase().replace('forget', '').trim();
+          memories = memories.filter(m => !m.content.toLowerCase().includes(toForget));
+          localStorage.setItem('memories', JSON.stringify(memories));
+          updateMemoriesPane();
+        }
       } catch (error) {
-        console.error('API Error:', error);
         removeLoadingMessage(thinkingMessage);
         addMessageToChat('assistant', 'Sorry, an error occurred while retrieving the response.');
+        console.error('AI request failed:', error);
       }
     });
 
     document.getElementById('user-input').addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') document.getElementById('send-button').click();
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        document.getElementById('send-button').click();
+      }
     });
 
-    document.getElementById('new-chat-button').addEventListener('click', async () => {
-      await saveOrUpdateChat();
+    document.getElementById('new-chat-button').addEventListener('click', () => {
       conversation = [];
       document.getElementById('chat-container').innerHTML = '';
       document.getElementById('user-input').value = '';
       document.getElementById('preview-area').innerHTML = '';
-      selectedFiles = [];
+      document.getElementById('file-input').value = '';
       sources = [];
       currentChatIndex = -1;
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('memories-pane').classList.remove('open');
+      document.getElementById('main-container').classList.remove('shifted-left', 'shifted-right');
     });
 
     const modelSelectButton = document.getElementById('model-select-button');
@@ -1025,23 +1446,9 @@
       }
     });
 
-    // Initial chat history load
     updateChatHistory();
-
-    // Adjust layout on window resize
-    window.addEventListener('resize', () => {
-      const sidebar = document.getElementById('sidebar');
-      const mainContainer = document.getElementById('main-container');
-      if (window.innerWidth <= 480) {
-        if (sidebar.classList.contains('open')) {
-          mainContainer.style.display = 'none';
-        } else {
-          mainContainer.style.display = 'flex';
-        }
-      } else {
-        mainContainer.style.display = 'flex';
-      }
-    });
+    updateMemoriesPane();
+    updateUserInfo(); // Initial fetch only
   </script>
 </body>
 </html>
