@@ -22,12 +22,23 @@
       --transition-speed: 0.3s;
       --accent-color: #58a6ff;
       --hover-color: #2ea043;
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      --input-bg: #0d1117;
+      --input-border: #30363d;
+      --input-focus-border: #58a6ff;
+      --input-focus-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+      --button-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --button-hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+      --sidebar-width: 300px;
     }
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: var(--font-family);
       margin: 0;
       padding: 20px;
       background-color: var(--background-color);
@@ -37,6 +48,7 @@
       height: 100vh;
       gap: 20px;
       transition: background-color var(--transition-speed) ease;
+      line-height: 1.6;
     }
     #sidebar, #memories-pane {
       width: 0;
@@ -60,7 +72,7 @@
       right: 20px;
     }
     #sidebar.open, #memories-pane.open {
-      width: 300px;
+      width: var(--sidebar-width);
       padding: 20px;
     }
     #sidebar .chat-card, #memories-pane .memory-card {
@@ -137,10 +149,10 @@
       min-height: 0;
     }
     #main-container.shifted-left {
-      margin-left: 340px;
+      margin-left: calc(var(--sidebar-width) + 40px);
     }
     #main-container.shifted-right {
-      margin-right: 340px;
+      margin-right: calc(var(--sidebar-width) + 40px);
     }
     #controls {
       display: flex;
@@ -269,10 +281,17 @@
       border-radius: 6px;
       margin-top: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .message iframe.youtube-embed {
       aspect-ratio: 16 / 9;
       width: 560px;
       height: 315px;
-      transition: transform 0.3s ease;
+    }
+    .message iframe.spotify-embed {
+      width: 100%;
+      height: 152px;
+      border-radius: 12px;
     }
     .message iframe:hover {
       transform: scale(1.02);
@@ -296,11 +315,13 @@
       font-size: 15px;
     }
     .message a {
-      color: #58a6ff;
+      color: var(--accent-color);
       text-decoration: none;
+      transition: color 0.2s ease, text-decoration 0.2s ease;
     }
     .message a:hover {
       text-decoration: underline;
+      color: #78b6ff;
     }
     .message sup a {
       font-size: 0.8em;
@@ -313,7 +334,7 @@
       margin: 8px 0;
     }
     .message pre {
-      background-color: #161b22;
+      background-color: var(--code-bg);
       padding: 10px;
       border-radius: 6px;
       overflow-x: auto;
@@ -321,7 +342,7 @@
       margin: 8px 0;
     }
     .message code {
-      background-color: #161b22;
+      background-color: var(--code-bg);
       padding: 2px 5px;
       border-radius: 4px;
       font-size: 14px;
@@ -350,9 +371,10 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 12px;
+      transition: background-color 0.2s ease;
     }
     .code-card .copy-btn:hover {
-      background-color: #1f6e2d;
+      background-color: var(--hover-color);
     }
     .thinking, .searching {
       background-color: var(--assistant-message-bg);
@@ -368,7 +390,7 @@
       gap: 10px;
     }
     .thinking::before {
-      content: "🤔";
+      content: "";
     }
     .searching::before {
       content: "🔍";
@@ -450,21 +472,22 @@
     }
     #user-input {
       flex-grow: 1;
-      padding: 10px 15px;
-      background-color: #0d1117;
+      padding: 12px 16px;
+      background-color: var(--input-bg);
       color: var(--text-color);
-      border: 1px solid #30363d;
+      border: 1px solid var(--input-border);
       border-radius: var(--border-radius);
       font-size: 16px;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
       min-height: 50px;
       resize: none;
       line-height: 1.5;
+      font-family: var(--font-family);
     }
     #user-input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 5px rgba(35, 134, 54, 0.5);
+      border-color: var(--input-focus-border);
+      box-shadow: var(--input-focus-shadow);
     }
     #send-button, #file-input-label, #new-chat-button, #sidebar-toggle, #memories-toggle {
       padding: 10px 20px;
@@ -481,11 +504,12 @@
       align-items: center;
       justify-content: center;
       gap: 5px;
+      box-shadow: var(--button-shadow);
     }
     #send-button:hover, #file-input-label:hover, #new-chat-button:hover, #sidebar-toggle:hover, #memories-toggle:hover {
       background-color: var(--hover-color);
       transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(35, 134, 54, 0.4);
+      box-shadow: var(--button-hover-shadow);
     }
     #send-button:active, #file-input-label:active, #new-chat-button:active, #sidebar-toggle:active, #memories-toggle:active {
       transform: translateY(0);
@@ -608,10 +632,10 @@
         max-width: 100%;
       }
       #main-container.shifted-left {
-        margin-left: 340px;
+        margin-left: calc(var(--sidebar-width) + 40px);
       }
       #main-container.shifted-right {
-        margin-right: 340px;
+        margin-right: calc(var(--sidebar-width) + 40px);
       }
     }
     @media (max-width: 768px) {
@@ -620,16 +644,16 @@
         gap: 15px;
       }
       #sidebar.open {
-        width: 280px;
+        width: calc(var(--sidebar-width) - 20px);
       }
       #memories-pane.open {
-        width: 280px;
+        width: calc(var(--sidebar-width) - 20px);
       }
       #main-container.shifted-left {
-        margin-left: 310px;
+        margin-left: calc(var(--sidebar-width) + 10px);
       }
       #main-container.shifted-right {
-        margin-right: 310px;
+        margin-right: calc(var(--sidebar-width) + 10px);
       }
       #controls {
         flex-wrap: wrap;
@@ -685,6 +709,21 @@
         transform: translateX(0);
         width: 85%;
       }
+      /* Add overlay when sidebar or memories are open */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 25;
+        backdrop-filter: blur(3px);
+      }
+      .overlay.active {
+        display: block;
+      }
       #main-container {
         margin: 0;
         width: 100%;
@@ -712,8 +751,8 @@
       }
       #chat-container {
         margin-top: 60px;
-        margin-bottom: 60px;
-        height: calc(100vh - 120px);
+        margin-bottom: 70px;
+        height: calc(100vh - 130px);
         border: none;
         border-radius: 0;
         padding: 15px;
@@ -721,73 +760,116 @@
         overflow-y: auto;
       }
       #input-area {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: 8px;
         padding: 10px;
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 60px;
+        min-height: 70px;
         z-index: 20;
         border-radius: 0;
         background-color: var(--secondary-color);
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
-        transition: height 0.3s ease;
-      }
-      #input-area.expanded {
-        height: 200px;
+        justify-content: space-between;
+        align-items: center;
       }
       #user-input {
-        width: 100%;
+        width: calc(100% - 120px);
         min-height: 40px;
         padding: 8px 12px;
         font-size: 14px;
-        display: none;
-      }
-      #input-area.expanded #user-input {
+        order: 1;
         display: block;
       }
       #preview-area {
+        width: 100%;
         max-width: 100%;
-        justify-content: center;
-        display: none;
-      }
-      #input-area.expanded #preview-area {
+        justify-content: flex-start;
+        order: 3;
+        margin-top: 5px;
         display: flex;
+        overflow-x: auto;
+        padding-bottom: 5px;
       }
       #send-button {
         padding: 8px 16px;
         font-size: 12px;
         width: auto;
+        order: 2;
       }
       #file-input-label {
-        padding: 8px 16px;
+        padding: 8px;
         font-size: 12px;
         width: auto;
-        display: none;
-      }
-      #input-area.expanded #file-input-label {
-        display: block;
-      }
-      #new-chat-button, #sidebar-toggle, #memories-toggle {
-        padding: 8px 16px;
-        font-size: 12px;
-        width: auto;
+        order: 4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5px;
       }
       .switch-container {
-        display: none;
-      }
-      #input-area.expanded .switch-container {
+        order: 5;
         display: flex;
+        margin-right: 5px;
       }
-      #controls .model-select-container {
+      .switch-label {
         display: none;
+      }
+      #new-chat-button {
+        padding: 8px;
+        font-size: 12px;
+        width: auto;
+      }
+      #sidebar-toggle, #memories-toggle {
+        padding: 8px;
+        font-size: 12px;
+        width: auto;
       }
       .message iframe {
         width: 100%;
         height: auto;
         aspect-ratio: 16 / 9;
+      }
+      /* Close button for sidebar and memories */
+      .close-panel {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 31;
+      }
+      .close-panel:hover {
+        color: var(--primary-color);
+      }
+      /* Fix model selection dropdown on mobile */
+      .model-select-container {
+        display: none;
+      }
+      /* Add icons to buttons for better mobile UX */
+      #send-button::before {
+        content: "➤";
+        margin-right: 5px;
+      }
+      #file-input-label::before {
+        content: "📎";
+        margin-right: 5px;
+      }
+      #sidebar-toggle::before {
+        content: "☰";
+      }
+      #memories-toggle::before {
+        content: "🧠";
+      }
+      #new-chat-button::before {
+        content: "✚";
+        margin-right: 5px;
       }
     }
     #sidebar-toggle, #memories-toggle {
@@ -815,8 +897,9 @@
   </style>
 </head>
 <body>
-  <div id="sidebar"><h2 id="sidebar-label">History</h2></div>
-  <div id="memories-pane"><h2 id="memories-label">Memories</h2></div>
+  <div id="sidebar"><h2 id="sidebar-label">History</h2><button class="close-panel">&times;</button></div>
+  <div id="memories-pane"><h2 id="memories-label">Memories</h2><button class="close-panel">&times;</button></div>
+  <div class="overlay"></div>
   <div id="main-container">
     <div id="controls">
       <button id="sidebar-toggle">☰</button>
@@ -1086,7 +1169,18 @@
             "role": "system",
             "content": `Perform two tasks based on the conversation:
 1. Generate a concise chat name (1-3 words) summarizing the conversation, in ${language}.
-2. Update the memories list with persistent, relevant facts: personal info (e.g., "Name: Alice"), plans (e.g., "Wants to go Paris on 15.03.2025"), personality (e.g., "Personality: cheerful"), AI response preferences (e.g., "Prefers short answers"), and interests (e.g., "Likes: coffee"). EXCLUDE temporary states (e.g., "Feeling: good") and chat-specific queries (e.g., "Wants to know what X is"). Add or edit based on explicit statements or light inference, but do not over-interpret. Only remove entries if they are explicitly contradicted or outdated; never delete all memories unless "forget everything" is in the conversation. If the input is large or unclear, preserve existing memories unchanged.
+2. Update the memories list with persistent, relevant facts about the user. Format memories as natural, complete sentences rather than label-style entries. For example, use "User lives in Berlin" instead of "Lives in: Berlin" and "User follows a vegan diet" instead of "Likes: Vegan".
+
+Include information such as:
+- Personal information (e.g., "User's name is Alice", "User is 32 years old")
+- Future plans (e.g., "User plans to visit Paris on March 15, 2025")
+- Personality traits (e.g., "User has a cheerful personality")
+- Preferences for AI responses (e.g., "User prefers detailed technical explanations")
+- Interests and hobbies (e.g., "User enjoys hiking in the mountains")
+- Dietary preferences (e.g., "User follows a vegan diet")
+
+EXCLUDE temporary states (e.g., "User is feeling good today") and chat-specific queries (e.g., "User wants to know what X is"). Add or edit based on explicit statements or light inference, but do not over-interpret. Only remove entries if they are explicitly contradicted or outdated; never delete all memories unless "forget everything" is in the conversation. If the input is large or unclear, preserve existing memories unchanged.
+
 Return a JSON object with:
 - "chatName": string (the chat name)
 - "memories": array of strings (one memory per entry)
@@ -1148,21 +1242,120 @@ ${existingMemories}`
       }
     }
 
-    async function tryWebSearch(userText, maxAttempts = 3, isYouTube = false) {
-      let attempts = 0;
-      let searchResult = null;
-      const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      const language = await detectLanguage(userText);
-
-      while (attempts < maxAttempts) {
-        attempts++;
-        const seed = getRandomSeed();
+    async function tryWebSearch(prompt, maxAttempts = 3, isYouTubeSearch = false, isSpotifySearch = false) {
+      let attemptsMade = 0;
+      let delay = 1000; // 1 second delay between attempts
+      
+      while (attemptsMade < maxAttempts) {
+        attemptsMade++;
+        console.log(`Attempt ${attemptsMade} of ${maxAttempts}`);
+        
         try {
           let systemPrompt;
-          if (isYouTube) {
-            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, search YouTube for ONE highly relevant, working, and embeddable video related to "${userText}". Prioritize videos from famous channels or with high view counts. Return the result in this exact format: {"youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID", "title": "VIDEO_TITLE"}. If no suitable video is found, return {"youtube_url": null}.`;
+          let language = detectLanguage(prompt);
+          const currentDate = new Date().toLocaleString();
+          
+          if (isYouTubeSearch) {
+            systemPrompt = `Return a relevant YouTube video for the query: "${prompt}". 
+            
+IMPORTANT REQUIREMENTS:
+- Only return valid, existing YouTube videos that can be embedded
+- Prioritize videos from official channels, famous creators, or with high view counts
+- Verify the video exists and is not age-restricted or private
+- The video ID must be the exact ID from the YouTube URL (typically 11 characters)
+
+Return the result in this exact JSON format:
+{"youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID", "title": "Video Title"}
+
+If no suitable video can be found, return:
+{"youtube_url": null}`;
+          } else if (isSpotifySearch) {
+            // Get web search context first if this is a direct Spotify search
+            let webContext = "";
+            if (!prompt.toLowerCase().includes("spotify")) {
+              try {
+                const webSearchResult = await tryWebSearch(prompt, 1, false, false);
+                if (webSearchResult && webSearchResult.results && webSearchResult.results.length > 0) {
+                  // Extract relevant context from web search
+                  webContext = "Based on these facts: ";
+                  for (let i = 0; i < Math.min(webSearchResult.results.length, 5); i++) {
+                    webContext += webSearchResult.results[i].Fact + "; ";
+                  }
+                }
+              } catch (error) {
+                console.log("Error getting web context for Spotify search:", error);
+                // Continue without web context if there's an error
+              }
+            }
+            
+            systemPrompt = `${webContext}Return a relevant Spotify track, album, or playlist for the query: "${prompt}".
+
+IMPORTANT REQUIREMENTS:
+- Only return valid, existing Spotify content
+- Prioritize popular or well-known content with many plays or followers
+- Verify the content exists on Spotify before returning it
+- The Spotify ID must be the exact ID from the Spotify URL (typically 22 characters)
+
+Return the result in this exact JSON format:
+{"spotify_url": "https://open.spotify.com/track/SPOTIFY_ID", "title": "Content Title", "type": "track|album|playlist"}
+
+If no suitable content can be found, return:
+{"spotify_url": null}`;
           } else {
-            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, conduct a comprehensive and detailed web research for the given prompt in the language detected as "${language}". Provide current information (as of ${currentDate} or later, if available), including precise facts, background details, and relevant insights. Ensure each fact is accompanied by a source URL from trustworthy, up-to-date references. Return you answer in an array with two keys each: Fact and Source (the source must be the exact URL where the fact came from!). Make the search as detailed as possible and sum it up as short as possible without removing any details! Newer write anything without checking the sources for trust!`;
+            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, conduct a comprehensive and detailed web research for the given prompt in the language detected as "${language}". Provide current information (as of ${currentDate} or later, if available), including precise facts, background details, and relevant insights. 
+
+CRITICAL REQUIREMENTS FOR FACT VERIFICATION:
+1. ONLY include information that you can VERIFY from reliable sources
+2. NEVER hallucinate facts or make up information not found in your sources
+3. ALWAYS double-check information across multiple sources when possible
+4. If sources contradict each other, acknowledge the discrepancy and present both viewpoints
+5. If you cannot find reliable information on a topic, state clearly that "No reliable information was found on this specific point"
+6. For controversial topics, present multiple perspectives from different reliable sources
+
+For each fact, include:
+1. The exact information with specific numbers, dates, and details
+2. Context and background information when relevant
+3. Multiple perspectives or viewpoints when applicable
+4. Comparisons with similar topics when helpful
+5. Recent developments or updates
+
+Ensure each fact is accompanied by a source URL from trustworthy, up-to-date references. Return your answer in an array with two keys each: Fact and Source (the source must be the exact URL where the fact came from!). 
+
+RELIABLE SOURCES include:
+- Academic journals and research papers
+- Government websites (.gov domains)
+- Educational institutions (.edu domains)
+- Established news organizations with fact-checking processes
+- Official organizational websites for the topic in question
+- Peer-reviewed publications
+- Primary sources (original documents, official statements, etc.)
+
+AVOID using sources that:
+- Have a clear bias or agenda
+- Are known for spreading misinformation
+- Lack editorial oversight
+- Are anonymous or lack clear authorship
+- Contradict well-established scientific consensus without compelling evidence
+
+Additionally, determine if this query would benefit from a YouTube video or Spotify content. Set these flags at the end of your response:
+- YouTube: true/false (set to true if a video would enhance the answer, such as for tutorials, music videos, documentaries, etc.)
+- Spotify: true/false (set to true if music content would enhance the answer, such as for songs, albums, artists, playlists, etc.)
+
+Examples of when to set YouTube: true:
+- Queries about how to do something visual (tutorials, demonstrations)
+- Requests about music videos, movie trailers, or visual content
+- Topics that would benefit from visual explanation
+- Historical events with available footage
+- Product reviews or demonstrations
+
+Examples of when to set Spotify: true:
+- Direct queries about songs, albums, artists, or playlists
+- Music recommendations or discussions
+- Queries about music genres, trends, or history
+- Requests for background music or mood playlists
+- Discussions about podcasts available on Spotify
+
+Make the search as detailed as possible with at least 10-15 distinct facts when available. Prioritize authoritative sources like academic journals, government websites, and reputable news outlets. Never write anything without checking the sources for trustworthiness!`;
           }
           
           const searchResponse = await fetch('https://text.pollinations.ai/', {
@@ -1171,112 +1364,230 @@ ${existingMemories}`
             body: JSON.stringify({
               messages: [
                 {"role": "system", "content": systemPrompt},
-                {"role": "user", "content": userText}
+                {"role": "user", "content": prompt}
               ],
               model: 'searchgpt',
-              seed: seed,
+              seed: getRandomSeed(),
               jsonMode: true,
               private: true
             })
           });
 
           if (!searchResponse.ok) {
-            console.log(`Attempt ${attempts}: API call failed with status ${searchResponse.status}`);
-            if (attempts < maxAttempts) {
-              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait a bit longer between retries
+            console.log(`Attempt ${attemptsMade}: API call failed with status ${searchResponse.status}`);
+            if (attemptsMade < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, delay));
+              delay += 1000; // Increase delay for subsequent attempts
               continue;
             } else {
-              return { error: true, message: `Search failed after ${maxAttempts} attempts: API error ${searchResponse.status}`, attemptsMade: attempts };
+              return { error: true, message: `Search failed after ${attemptsMade} attempts: API error ${searchResponse.status}`, attemptsMade: attemptsMade };
             }
           }
 
-          searchResult = await searchResponse[isYouTube ? 'json' : 'text']();
-
+          const result = await searchResponse.json();
+          console.log(`Search result (Attempt ${attemptsMade}):`, result);
+          
           // Check for "XNoInternetX" in the response
-          if ((typeof searchResult === 'string' && searchResult.includes('XNoInternetX')) || 
-              (typeof searchResult === 'object' && JSON.stringify(searchResult).includes('XNoInternetX')) ||
-              (typeof searchResult === 'string' && searchResult.includes('"Fact":"XNoInternetX"'))) {
-            console.log(`Attempt ${attempts}: No internet access detected`);
-            if (attempts < maxAttempts) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
+          if ((typeof result === 'string' && result.includes('XNoInternetX')) || 
+              (typeof result === 'object' && JSON.stringify(result).includes('XNoInternetX')) ||
+              (typeof result === 'string' && result.includes('"Fact":"XNoInternetX"'))) {
+            console.log(`Attempt ${attemptsMade}: No internet access detected`);
+            if (attemptsMade < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, delay));
+              delay += 1000; // Increase delay for subsequent attempts
               continue;
             } else {
-              return { error: true, message: `Search failed after ${maxAttempts} attempts: No internet access`, attemptsMade: attempts };
+              return { error: true, message: `Search failed after ${attemptsMade} attempts: No internet access`, attemptsMade: attemptsMade };
             }
           }
 
           // Check for error in the result
-          if (searchResult && searchResult.error) {
-            console.log(`Attempt ${attempts}: Search returned error: ${searchResult.message || 'undefined'}`);
-            if (attempts < maxAttempts) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
+          if (result && result.error) {
+            console.log(`Attempt ${attemptsMade}: Search returned error: ${result.message || 'undefined'}`);
+            if (attemptsMade < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, delay));
+              delay += 1000; // Increase delay for subsequent attempts
               continue;
             } else {
-              return { error: true, message: `Search failed after ${maxAttempts} attempts: ${searchResult.message || 'undefined'}`, attemptsMade: attempts };
+              return { error: true, message: `Search failed after ${attemptsMade} attempts: ${result.message || 'undefined'}`, attemptsMade: attemptsMade };
             }
           }
 
           // For YouTube searches
-          if (isYouTube) {
-            if (searchResult && searchResult.youtube_url) {
-              const videoIdMatch = searchResult.youtube_url.match(/v=([^&]+)/);
+          if (isYouTubeSearch) {
+            if (result && result.youtube_url) {
+              const videoIdMatch = result.youtube_url.match(/v=([^&]+)/);
               if (videoIdMatch && videoIdMatch[1]) {
+                const videoId = videoIdMatch[1];
+                
+                // Validate the YouTube URL by attempting to fetch it
                 try {
-                  const response = await fetch(`https://www.youtube.com/oembed?url=${searchResult.youtube_url}`, { method: 'HEAD' });
+                  const response = await fetch(`https://www.youtube.com/oembed?url=${result.youtube_url}`, { method: 'HEAD' });
                   if (response.ok) {
-                    console.log(`YouTube Search Result (Attempt ${attempts}):`, searchResult);
-                    return { error: false, result: searchResult, attemptsMade: attempts };
+                    console.log(`YouTube Search Result (Attempt ${attemptsMade}):`, result);
+                    return { error: false, result: result, attemptsMade: attemptsMade };
                   } else {
-                    console.log(`Attempt ${attempts}: YouTube video validation failed`);
-                    if (attempts < maxAttempts) {
-                      await new Promise(resolve => setTimeout(resolve, 1000));
-                      continue;
-                    }
+                    console.error(`YouTube video exists but cannot be embedded: ${result.youtube_url}`);
+                    return { error: true, message: `YouTube video exists but cannot be embedded: ${result.youtube_url}`, attemptsMade: attemptsMade };
                   }
-                } catch (e) {
-                  console.log(`Attempt ${attempts}: YouTube validation error: ${e.message}`);
-                  if (attempts < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    continue;
-                  }
+                } catch (error) {
+                  console.error(`Failed to validate YouTube URL: ${error.message}`);
+                  return { error: true, message: `Failed to validate YouTube URL: ${error.message}`, attemptsMade: attemptsMade };
                 }
               } else {
-                console.log(`Attempt ${attempts}: Invalid YouTube URL format`);
-                if (attempts < maxAttempts) {
-                  await new Promise(resolve => setTimeout(resolve, 1000));
-                  continue;
-                }
+                console.log('Invalid YouTube URL format received');
+                return { error: true, message: `Invalid YouTube URL format received: ${result.youtube_url}`, attemptsMade: attemptsMade };
               }
             } else {
-              console.log(`Attempt ${attempts}: No YouTube URL found in result`);
-              if (attempts < maxAttempts) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                continue;
-              }
+              console.log('No YouTube URL found in result');
+              return { error: true, message: 'No YouTube URL found in result', attemptsMade: attemptsMade };
             }
-            
-            // If we reached here with YouTube search and all attempts failed, return error
-            if (attempts >= maxAttempts) {
-              return { error: true, message: `No valid YouTube video found after ${maxAttempts} attempts`, attemptsMade: attempts };
+          } else if (isSpotifySearch) {
+            if (result && result.spotify_url) {
+              // Extract content type and ID from Spotify URL
+              const spotifyUrlPattern = /spotify\.com\/(track|album|playlist|artist)\/([a-zA-Z0-9]+)/;
+              const spotifyMatch = result.spotify_url.match(spotifyUrlPattern);
+              
+              if (spotifyMatch && spotifyMatch[1] && spotifyMatch[2]) {
+                const contentType = spotifyMatch[1];
+                const contentId = spotifyMatch[2];
+                
+                // Validate the Spotify URL by attempting to fetch it
+                try {
+                  const response = await fetch(`https://open.spotify.com/${contentType}/${contentId}`, { 
+                    method: 'HEAD',
+                    mode: 'no-cors' // To avoid CORS issues
+                  });
+                  
+                  console.log(`Spotify Search Result (Attempt ${attemptsMade}):`, result);
+                  return { 
+                    error: false, 
+                    result: {
+                      spotify_url: result.spotify_url,
+                      title: result.title || "Spotify Content",
+                      type: contentType
+                    }, 
+                    attemptsMade: attemptsMade 
+                  };
+                } catch (error) {
+                  console.error(`Failed to validate Spotify URL: ${error.message}`);
+                  if (attemptsMade < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay += 1000;
+                    continue;
+                  }
+                  return { error: true, message: `Failed to validate Spotify URL: ${error.message}`, attemptsMade: attemptsMade };
+                }
+              } else {
+                console.log('Invalid Spotify URL format received');
+                if (attemptsMade < maxAttempts) {
+                  await new Promise(resolve => setTimeout(resolve, delay));
+                  delay += 1000;
+                  continue;
+                }
+                return { error: true, message: `Invalid Spotify URL format received: ${result.spotify_url}`, attemptsMade: attemptsMade };
+              }
+            } else {
+              // Legacy code for handling spotify_selection
+              // Map of pre-verified working Spotify tracks
+              const spotifyTracks = {
+                "1": { id: "7qiZfU4dY1lWllzX7mPBI3", title: "Shape of You - Ed Sheeran", type: "track" },
+                "2": { id: "4u7EnebtmKWzUH433cf5Qv", title: "Bohemian Rhapsody - Queen", type: "track" },
+                "3": { id: "5ChkMS8OtdzJeqyybCc9R5", title: "Billie Jean - Michael Jackson", type: "track" },
+                "4": { id: "5CQ30WqJwcep0pYcV4AMNc", title: "Stairway to Heaven - Led Zeppelin", type: "track" },
+                "5": { id: "5ghIJDpPoe3CfHMGu71E6T", title: "Smells Like Teen Spirit - Nirvana", type: "track" },
+                "6": { id: "40riOy7x9W7GXjyGp4pjAv", title: "Hotel California - Eagles", type: "track" },
+                "7": { id: "7o2CTH4ctstm8TNelqjb51", title: "Sweet Child O' Mine - Guns N' Roses", type: "track" },
+                "8": { id: "7pKfPomDEeI4TPT6EOYjn9", title: "Imagine - John Lennon", type: "track" },
+                "9": { id: "2LlQb7oMpft1qczHlcbzYi", title: "Thriller - Michael Jackson", type: "track" },
+                "10": { id: "5qqabIl2vWzo9ApSC317sa", title: "Wonderwall - Oasis", type: "track" },
+                "11": { id: "0aym2LBJBk9DAYuHHutrIl", title: "Hey Jude - The Beatles", type: "track" },
+                "12": { id: "3AhXZa8sUQht0UEdBJgpGc", title: "Like a Rolling Stone - Bob Dylan", type: "track" },
+                "13": { id: "0wJoRiX5K5BxlqZTolB2LD", title: "Purple Haze - Jimi Hendrix", type: "track" },
+                "14": { id: "7y69MRxUAjvgCvJ4LdQQUq", title: "Johnny B. Goode - Chuck Berry", type: "track" },
+                "15": { id: "5ZBeML7Lf3FMEVviTyvi8l", title: "I Want to Hold Your Hand - The Beatles", type: "track" },
+                "16": { id: "7s25THrKz86DM225dOYwnr", title: "Respect - Aretha Franklin", type: "track" },
+                "17": { id: "6hTcuIQa0sxrrByu9wTD7s", title: "Born to Run - Bruce Springsteen", type: "track" },
+                "18": { id: "1qiQduG0FgxdAn3xHmH1Sq", title: "Superstition - Stevie Wonder", type: "track" },
+                "19": { id: "1JSTJqkT5qHq8MDJnJbRE1", title: "Every Breath You Take - The Police", type: "track" },
+                "20": { id: "3pRaLNL3b8x5uBOcsgvdqM", title: "Hallelujah - Leonard Cohen", type: "track" },
+                "21": { id: "3BQHpFgAp4l80e1XslIjNI", title: "Yesterday - The Beatles", type: "track" },
+                "22": { id: "3Um9toULmYFGCpvaIPFw5v", title: "What's Going On - Marvin Gaye", type: "track" },
+                "23": { id: "2Ld0LxkXJFLTpW0jhvtUfg", title: "Waterloo Sunset - The Kinks", type: "track" },
+                "24": { id: "6iGYe8M6ZmD8MwJJkSnAd6", title: "God Only Knows - The Beach Boys", type: "track" },
+                "25": { id: "5FVd6KXrgO9B3JPmC8OPst", title: "London Calling - The Clash", type: "track" },
+                "26": { id: "7tr2za8SQg2CI8EDgrdtNl", title: "Good Vibrations - The Beach Boys", type: "track" },
+                "27": { id: "0GjEhVFGZW8afUYGChu3Rr", title: "Dancing Queen - ABBA", type: "track" },
+                "28": { id: "5WoaF1B5XIEnWfmb5NZikf", title: "I Want You Back - Jackson 5", type: "track" },
+                "29": { id: "6H3kDe7CGoWYBabAeVWGiD", title: "Gimme Shelter - The Rolling Stones", type: "track" },
+                "30": { id: "3BEmmHuv5jm0tbzWlFZxUH", title: "One - U2", type: "track" }
+              };
+              
+              // Get the selected track
+              const selection = result.spotify_selection;
+              if (spotifyTracks[selection]) {
+                const track = spotifyTracks[selection];
+                console.log(`Spotify Search Result (Attempt ${attemptsMade}): Selected track #${selection} - ${track.title}`);
+                return { 
+                  error: false, 
+                  result: { 
+                    spotify_url: `https://open.spotify.com/track/${track.id}`, 
+                    title: track.title, 
+                    type: "track" 
+                  }, 
+                  attemptsMade: attemptsMade 
+                };
+              } else {
+                // Default to track #1 if selection is invalid
+                const track = spotifyTracks["1"];
+                console.log(`Invalid selection #${selection}, defaulting to track #1`);
+                return { 
+                  error: false, 
+                  result: { 
+                    spotify_url: `https://open.spotify.com/track/${track.id}`, 
+                    title: track.title, 
+                    type: "track" 
+                  }, 
+                  attemptsMade: attemptsMade,
+                  isDefault: true
+                };
+              }
             }
           } else {
             // For regular web searches
-            console.log(`Web Search Result (Attempt ${attempts}):`, searchResult);
-            return { error: false, result: searchResult, attemptsMade: attempts };
+            console.log(`Web Search Result (Attempt ${attemptsMade}):`, result);
+            
+            // Check if the result contains YouTube or Spotify flags
+            const resultStr = result.toString();
+            const needsYouTube = resultStr.includes('"YouTube": true') || resultStr.includes('"YouTube":true');
+            const needsSpotify = resultStr.includes('"Spotify": true') || resultStr.includes('"Spotify":true');
+            
+            // Also check for music-related keywords in the query to improve Spotify detection
+            const musicKeywords = ['song', 'music', 'track', 'artist', 'band', 'album', 'playlist', 'spotify', 'listen', 'play'];
+            const hasMusicKeywords = musicKeywords.some(keyword => prompt.toLowerCase().includes(keyword));
+            
+            return { 
+              error: false, 
+              result: result, 
+              attemptsMade: attemptsMade,
+              needsYouTube: needsYouTube,
+              needsSpotify: needsSpotify || hasMusicKeywords
+            };
           }
         } catch (error) {
-          console.error(`Search attempt ${attempts} failed:`, error);
-          if (attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+          console.error(`Search attempt ${attemptsMade} failed:`, error);
+          if (attemptsMade < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay += 1000; // Increase delay for subsequent attempts
             continue;
           } else {
-            return { error: true, message: `Search failed after ${maxAttempts} attempts: ${error.message}`, attemptsMade: attempts };
+            return { error: true, message: `Search failed after ${attemptsMade} attempts: ${error.message}`, attemptsMade: attemptsMade };
           }
         }
       }
 
       // Fallback return if loop exits without returning
-      return { error: true, message: `Search failed after ${maxAttempts} attempts`, attemptsMade: attempts };
+      return { error: true, message: `Search failed after ${attemptsMade} attempts`, attemptsMade: attemptsMade };
     }
 
     async function extractTextFromPDF(file) {
@@ -1453,47 +1764,92 @@ ${existingMemories}`
       return textContent.length;
     }
 
-    document.getElementById('sidebar-toggle').addEventListener('click', () => {
+    document.addEventListener('DOMContentLoaded', function() {
+      const userInput = document.getElementById('user-input');
+      const sendButton = document.getElementById('send-button');
+      const fileInput = document.getElementById('file-input');
+      const previewArea = document.getElementById('preview-area');
+      const chatContainer = document.getElementById('chat-container');
+      const newChatButton = document.getElementById('new-chat-button');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const memoriesToggle = document.getElementById('memories-toggle');
       const sidebar = document.getElementById('sidebar');
       const memoriesPane = document.getElementById('memories-pane');
       const mainContainer = document.getElementById('main-container');
+      const webSearchToggle = document.getElementById('web-search-toggle');
+      const overlay = document.querySelector('.overlay');
+      const closePanelButtons = document.querySelectorAll('.close-panel');
+      const inputArea = document.getElementById('input-area');
+
+      // Initialize the UI
+      updateChatHistory();
+      updateMemoriesPane();
       
-      if (memoriesPane.classList.contains('open')) {
-        memoriesPane.classList.remove('open');
-        mainContainer.classList.remove('shifted-right');
-      }
-      
+      // Handle sidebar and memories toggle
+      sidebarToggle.addEventListener('click', function() {
       sidebar.classList.toggle('open');
       if (sidebar.classList.contains('open')) {
+          memoriesPane.classList.remove('open');
         mainContainer.classList.add('shifted-left');
+          mainContainer.classList.remove('shifted-right');
+          overlay.classList.add('active');
       } else {
         mainContainer.classList.remove('shifted-left');
-      }
-    });
+          overlay.classList.remove('active');
+        }
+      });
 
-    document.getElementById('memories-toggle').addEventListener('click', () => {
-      const sidebar = document.getElementById('sidebar');
-      const memoriesPane = document.getElementById('memories-pane');
-      const mainContainer = document.getElementById('main-container');
-      
-      if (sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-        mainContainer.classList.remove('shifted-left');
-      }
-      
+      memoriesToggle.addEventListener('click', function() {
       memoriesPane.classList.toggle('open');
       if (memoriesPane.classList.contains('open')) {
+          sidebar.classList.remove('open');
         mainContainer.classList.add('shifted-right');
+          mainContainer.classList.remove('shifted-left');
+          overlay.classList.add('active');
       } else {
         mainContainer.classList.remove('shifted-right');
-      }
-    });
+          overlay.classList.remove('active');
+        }
+      });
 
-    document.getElementById('file-input').addEventListener('change', (event) => {
+      // Close panels when clicking on overlay
+      overlay.addEventListener('click', function() {
+        sidebar.classList.remove('open');
+        memoriesPane.classList.remove('open');
+        mainContainer.classList.remove('shifted-left', 'shifted-right');
+        overlay.classList.remove('active');
+      });
+
+      // Close panel buttons
+      closePanelButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const panel = this.parentElement;
+          panel.classList.remove('open');
+          mainContainer.classList.remove('shifted-left', 'shifted-right');
+          overlay.classList.remove('active');
+        });
+      });
+
+      // Handle input area on mobile
+      if (window.innerWidth <= 480) {
+        userInput.addEventListener('focus', function() {
+          if (previewArea.children.length > 0) {
+            previewArea.style.display = 'flex';
+          }
+        });
+        
+        userInput.addEventListener('blur', function() {
+          if (previewArea.children.length === 0) {
+            previewArea.style.display = 'none';
+          }
+        });
+      }
+
+      // Handle file input
+      fileInput.addEventListener('change', (event) => {
       const files = Array.from(event.target.files);
       if (!files.length) return;
 
-      const previewArea = document.getElementById('preview-area');
       previewArea.innerHTML = '';
 
       files.forEach(file => {
@@ -1513,13 +1869,59 @@ ${existingMemories}`
       });
     });
 
-    document.getElementById('send-button').addEventListener('click', async () => {
+      // Handle send button
+      sendButton.addEventListener('click', async () => {
+        await handleUserInput();
+      });
+
+      // Handle user input
+      userInput.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          await handleUserInput();
+        }
+      });
+
+      // Handle new chat button
+      newChatButton.addEventListener('click', () => {
+        startNewChat();
+      });
+
+      // Handle model selection
+      const modelSelectButton = document.getElementById('model-select-button');
+      const modelSelectDropdown = document.getElementById('model-select-dropdown');
+      
+      modelSelectButton.addEventListener('click', () => {
+        modelSelectDropdown.style.display = modelSelectDropdown.style.display === 'block' ? 'none' : 'block';
+      });
+
+      modelSelectDropdown.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedModel = button.getAttribute('data-value');
+          modelSelectButton.textContent = button.textContent;
+          modelSelectDropdown.style.display = 'none';
+        });
+      });
+
+      // Close model dropdown when clicking outside
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.model-select-container')) {
+          modelSelectDropdown.style.display = 'none';
+        }
+      });
+
+      updateUserInfo();
+    });
+
+    // Handle user input submission
+    async function handleUserInput() {
       const userText = document.getElementById('user-input').value.trim();
       const webSearchEnabled = document.getElementById('web-search-toggle').checked;
       const fileInput = document.getElementById('file-input');
       const files = fileInput.files ? Array.from(fileInput.files) : [];
+      const previewArea = document.getElementById('preview-area');
 
-      console.log('Send button clicked. Text:', userText, 'Files:', files.length);
+      console.log('Processing user input. Text:', userText, 'Files:', files.length);
 
       if (!userText && files.length === 0) {
         console.log('No text or files to send. Aborting.');
@@ -1570,42 +1972,69 @@ ${existingMemories}`
 
       console.log('Clearing input and preview area');
       document.getElementById('user-input').value = '';
-      document.getElementById('preview-area').innerHTML = '';
+      previewArea.innerHTML = '';
       fileInput.value = '';
-      const inputArea = document.getElementById('input-area');
-      if (window.innerWidth <= 480) {
-        inputArea.classList.remove('expanded');
-      }
 
       let systemMessage = null;
-      const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const currentDateTime = new Date().toLocaleString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+      });
       const isMathRequest = /\d\s*[\+\-\*\/]\s*\d|\b(math|calculate)\b/i.test(userText);
+      const isSpotifyRequest = /\b(spotify|song|track|album|playlist|music|artist)\b/i.test(userText);
       const memoryContext = memories.map(m => m.content).join('\n');
-      const memoryInstructions = `I can memorize key details you share across all chats (e.g., "Name: XX", "Wants to go XX on XX.XX.XXXX") and use them to assist you better. You can ask me to forget specific memories or all memories by saying "forget [specific detail]" or "forget everything". View or delete them manually via the Memories tab (🧠).`;
+      const memoryInstructions = `I can memorize key details you share across all chats and use them to assist you better. You can ask me to forget specific memories or all memories by saying "forget [specific detail]" or "forget everything". View or delete them manually via the Memories tab (🧠).`;
 
       if (webSearchEnabled || isMathRequest) {
         const searchLoadingMessage = isMathRequest ? addThinkingMessage() : addSearchLoadingMessage();
         
         console.log('Starting web search');
-        let youtubeSearchResult = webSearchEnabled ? await tryWebSearch(userText, 3, true) : { error: true, attemptsMade: 0 };
-        const webSearchResult = webSearchEnabled ? await tryWebSearch(userText, 3, false) : { error: true, attemptsMade: 0 };
-
-        // If first YouTube search fails, try with a more generic query
-        if (youtubeSearchResult.error || !youtubeSearchResult.result || !youtubeSearchResult.result.youtube_url) {
-          console.log('First YouTube search failed, trying with a more generic query');
-          youtubeSearchResult = webSearchEnabled ? await tryWebSearch(`tutorial about ${userText}`, 3, true) : { error: true, attemptsMade: 0 };
+        // First, perform the main web search
+        const webSearchResult = webSearchEnabled ? await tryWebSearch(userText, 3, false, false) : { error: true, attemptsMade: 0, needsYouTube: false, needsSpotify: false };
+        
+        // Initialize these properties if they don't exist
+        if (webSearchResult.needsYouTube === undefined) webSearchResult.needsYouTube = false;
+        if (webSearchResult.needsSpotify === undefined) webSearchResult.needsSpotify = false;
+        
+        // Check if this is a direct music request
+        const musicKeywords = ['song', 'music', 'track', 'artist', 'band', 'album', 'playlist', 'spotify', 'listen', 'play'];
+        const isDirectMusicRequest = musicKeywords.some(keyword => userText.toLowerCase().includes(keyword));
+        
+        // For direct Spotify requests or music-related queries, set the flag
+        if ((isSpotifyRequest || isDirectMusicRequest) && !webSearchResult.needsSpotify) {
+          webSearchResult.needsSpotify = true;
           
-          // If that also fails, try one more time with an even more generic query
-          if (youtubeSearchResult.error || !youtubeSearchResult.result || !youtubeSearchResult.result.youtube_url) {
-            console.log('Second YouTube search failed, trying with an even more generic query');
-            youtubeSearchResult = webSearchEnabled ? await tryWebSearch(`${userText} explained`, 3, true) : { error: true, attemptsMade: 0 };
-          }
+          // For direct Spotify requests, use the official Spotify API
+          // Pass an empty string as web search results since we don't have any
+          spotifySearchResult = await trySpotifySearch(userText, 3, "");
+        }
+        
+        // Only make YouTube/Spotify searches if the main search indicates they're needed
+        let youtubeSearchResult = { error: true, attemptsMade: 0 };
+        let spotifySearchResult = { error: true, attemptsMade: 0 };
+        
+        if (webSearchEnabled && !webSearchResult.error && webSearchResult.needsYouTube) {
+          // Make up to 3 attempts for YouTube search
+          youtubeSearchResult = await tryWebSearch(userText, 3, true, false);
+        }
+        
+        if (webSearchEnabled && !webSearchResult.error && webSearchResult.needsSpotify) {
+          // Make up to 3 attempts for Spotify search using the official API
+          const webSearchSummary = webSearchResult.result ? webSearchResult.result.substring(0, 500) : "";
+          spotifySearchResult = await trySpotifySearch(userText, 3, webSearchSummary);
         }
 
+        // No more retries for YouTube/Spotify search
         removeLoadingMessage(searchLoadingMessage);
 
         let combinedResults = '';
         let youtubeEmbed = '';
+        let spotifyEmbed = '';
         
         // Process web search results
         if (!webSearchResult.error && webSearchResult.result) {
@@ -1620,24 +2049,77 @@ ${existingMemories}`
           const videoIdMatch = youtubeSearchResult.result.youtube_url.match(/v=([^&]+)/);
           if (videoIdMatch && videoIdMatch[1]) {
             const videoId = videoIdMatch[1];
-            youtubeEmbed = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?si=FhIchvTjZVmMrvti" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
-            combinedResults += `\n${youtubeEmbed}\nRelevant YouTube video: ${youtubeSearchResult.result.youtube_url} - ${youtubeSearchResult.result.title || ''}\n`;
+            
+            // Validate the YouTube URL by attempting to fetch it
+            try {
+              const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}`, { 
+                method: 'HEAD'
+              });
+              
+              if (response.ok) {
+                // Create the embed iframe
+                youtubeEmbed = `<iframe class="youtube-embed" width="560" height="315" src="https://www.youtube.com/embed/${videoId}?si=FhIchvTjZVmMrvti" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+                combinedResults += `\n${youtubeEmbed}\nRelevant YouTube video: ${youtubeSearchResult.result.youtube_url} - ${youtubeSearchResult.result.title || ''}\n`;
+                
+                console.log(`Successfully validated and embedded YouTube video: ${videoId}`);
+              } else {
+                console.error(`YouTube video exists but cannot be embedded: ${videoId}`);
+                combinedResults += `\nRelevant YouTube video: ${youtubeSearchResult.result.youtube_url} - ${youtubeSearchResult.result.title || ''}\n`;
+              }
+            } catch (error) {
+              console.error(`Failed to validate YouTube URL: ${error.message}`);
+              combinedResults += `\nRelevant YouTube video: ${youtubeSearchResult.result.youtube_url} - ${youtubeSearchResult.result.title || ''}\n`;
+            }
+          } else {
+            console.log('Invalid YouTube URL format received');
+            combinedResults += `\nRelevant YouTube video: ${youtubeSearchResult.result.youtube_url} - ${youtubeSearchResult.result.title || ''}\n`;
           }
-        } else {
-          console.log('YouTube search failed after all attempts');
+        } else if (webSearchResult.needsYouTube) {
+          console.log('YouTube search failed after attempts');
           combinedResults += `YouTube search feature failed after ${youtubeSearchResult.attemptsMade} attempts. `;
+        }
+        
+        // Process Spotify results
+        if (!spotifySearchResult.error && spotifySearchResult.result && spotifySearchResult.result.spotify_url) {
+          const contentType = spotifySearchResult.result.type || 'track';
+          const spotifyUrlPattern = /spotify\.com\/(track|album|playlist|artist)\/([a-zA-Z0-9]+)/;
+          const spotifyMatch = spotifySearchResult.result.spotify_url.match(spotifyUrlPattern);
+          
+          if (spotifyMatch && spotifyMatch[1] && spotifyMatch[2]) {
+            const contentType = spotifyMatch[1];
+            const contentId = spotifyMatch[2];
+            
+            // Adjust height based on content type
+            let height = 152; // Default for tracks
+            if (contentType === 'album') height = 232;
+            if (contentType === 'playlist') height = 352;
+            if (contentType === 'artist') height = 352;
+            
+            // Create the embed iframe using the content type and ID
+            spotifyEmbed = `<iframe class="spotify-embed" style="border-radius:12px" src="https://open.spotify.com/embed/${contentType}/${contentId}?utm_source=generator" width="100%" height="${height}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+            
+            combinedResults += `\n${spotifyEmbed}\nSpotify ${contentType}: ${spotifySearchResult.result.title}\n`;
+            console.log(`Successfully embedded Spotify ${contentType}: ${contentId}`);
+          } else {
+            // Fallback to direct link if URL format is invalid
+            console.log('Invalid Spotify URL format, providing direct link instead');
+            combinedResults += `\nSpotify content: [${spotifySearchResult.result.title}](${spotifySearchResult.result.spotify_url})\n`;
+          }
+        } else if (webSearchResult.needsSpotify) {
+          console.log('Spotify search failed after attempts');
+          combinedResults += `Spotify search feature failed after ${spotifySearchResult.attemptsMade} attempts. `;
         }
 
         systemMessage = {
           "role": "system",
           "content": isMathRequest
-            ? `${memoryInstructions}\nAnswer the user's math question in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is explicitly requested. Use LaTeX notation (e.g., $$...$$) for all equations, ensuring proper rendering with no extra spacing or paragraphs around math. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
-            : `${memoryInstructions}\nYou have access to the following search results: ${combinedResults}. Use this information to answer the user's question with current details (as of ${currentDate} or later, if available). Mark nearly every fact with a compact source reference as "[Q[NUMBER]]" (e.g., "Tesla produced 10,000 Cybertrucks in 2025 Q2"). Number sources sequentially. Ensure the [Q[NUMBER]] in the text directly links to the corresponding URL in the sources list (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
+            ? `${memoryInstructions}\nCurrent date and time: ${currentDateTime}. Answer the user's math question in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is explicitly requested. Use LaTeX notation (e.g., $$...$$) for all equations, ensuring proper rendering with no extra spacing or paragraphs around math. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
+            : `${memoryInstructions}\nCurrent date and time: ${currentDateTime}. You have access to the following search results: ${combinedResults}. Use this information to answer the user's question with current details. Provide comprehensive, detailed, and well-structured responses with thorough explanations. Mark nearly every fact with a compact source reference as "[Q[NUMBER]]" (e.g., "Tesla produced 10,000 Cybertrucks in 2025 Q2 [Q1]"). Number sources sequentially. Ensure the [Q[NUMBER]] in the text directly links to the corresponding URL in the sources list (example: [Q1](https://tesla.com/news)). ${youtubeEmbed ? 'I have included a relevant YouTube video in the response. Reference it in your answer if appropriate.' : ''} ${spotifyEmbed ? 'I have included relevant Spotify content in the response. Reference it in your answer if appropriate.' : ''} For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
         };
       } else {
         systemMessage = {
           "role": "system",
-          "content": `${memoryInstructions}\nAnswer the user's question. If needed use headings (###) and lists (-). If sources are available or relevant, mark facts with compact references as [Q[NUMBER]] (e.g., "[Q1]"). Ensure the [Number] in the text directly links to the corresponding URL (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
+          "content": `${memoryInstructions}\nCurrent date and time: ${currentDateTime}. Answer the user's question with comprehensive, detailed, and well-structured responses. If needed use headings (###) and lists (-). If sources are available or relevant, mark facts with compact references as [Q[NUMBER]] (e.g., "[Q1]"). Ensure the [Number] in the text directly links to the corresponding URL (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
         };
       }
 
@@ -1662,11 +2144,11 @@ ${existingMemories}`
         await saveOrUpdateChat();
         console.log('AI response received and added:', data);
 
-        if (userText.toLowerCase().includes('forget everything')) {
+        if (userText && userText.toLowerCase().includes('forget everything')) {
           memories = [];
           localStorage.setItem('memories', JSON.stringify(memories));
           updateMemoriesPane();
-        } else if (userText.toLowerCase().includes('forget')) {
+        } else if (userText && userText.toLowerCase().includes('forget')) {
           const toForget = userText.toLowerCase().replace('forget', '').trim();
           memories = memories.filter(m => !m.content.toLowerCase().includes(toForget));
           localStorage.setItem('memories', JSON.stringify(memories));
@@ -1677,16 +2159,10 @@ ${existingMemories}`
         addMessageToChat('assistant', 'Sorry, an error occurred while retrieving the response.');
         console.error('AI request failed:', error);
       }
-    });
+    }
 
-    document.getElementById('user-input').addEventListener('keypress', (event) => {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        document.getElementById('send-button').click();
-      }
-    });
-
-    document.getElementById('new-chat-button').addEventListener('click', () => {
+    // Start a new chat
+    function startNewChat() {
       conversation = [];
       document.getElementById('chat-container').innerHTML = '';
       document.getElementById('user-input').value = '';
@@ -1694,45 +2170,254 @@ ${existingMemories}`
       document.getElementById('file-input').value = '';
       sources = [];
       currentChatIndex = -1;
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('memories-pane').classList.remove('open');
-      document.getElementById('main-container').classList.remove('shifted-left', 'shifted-right');
-      const inputArea = document.getElementById('input-area');
-      inputArea.classList.remove('expanded');
-    });
-
-    const modelSelectButton = document.getElementById('model-select-button');
-    const modelSelectDropdown = document.getElementById('model-select-dropdown');
-    modelSelectButton.addEventListener('click', () => {
-      modelSelectDropdown.style.display = modelSelectDropdown.style.display === 'block' ? 'none' : 'block';
-    });
-    modelSelectDropdown.addEventListener('click', (event) => {
-      if (event.target.tagName === 'BUTTON') {
-        selectedModel = event.target.getAttribute('data-value');
-        modelSelectButton.textContent = event.target.textContent;
-        modelSelectDropdown.style.display = 'none';
-      }
-    });
-    document.addEventListener('click', (event) => {
-      if (!modelSelectButton.contains(event.target) && !modelSelectDropdown.contains(event.target)) {
-        modelSelectDropdown.style.display = 'none';
-      }
-    });
-
-    if (window.innerWidth <= 480) {
-      const inputArea = document.getElementById('input-area');
-      const sendButton = document.getElementById('send-button');
-      sendButton.addEventListener('click', (e) => {
-        if (!inputArea.classList.contains('expanded')) {
-          e.preventDefault();
-          inputArea.classList.add('expanded');
-        }
-      });
+      
+      const sidebar = document.getElementById('sidebar');
+      const memoriesPane = document.getElementById('memories-pane');
+      const mainContainer = document.getElementById('main-container');
+      const overlay = document.querySelector('.overlay');
+      
+      sidebar.classList.remove('open');
+      memoriesPane.classList.remove('open');
+      mainContainer.classList.remove('shifted-left', 'shifted-right');
+      overlay.classList.remove('active');
     }
 
-    updateChatHistory();
-    updateMemoriesPane();
-    updateUserInfo();
+    // Add Spotify API functions
+    async function getSpotifyAccessToken() {
+      const clientId = 'd161f89df56b4e98ab2fa92bf3897fe6';
+      const clientSecret = 'a91703929d884228b1e9c31870ade978';
+      
+      try {
+        const response = await fetch('https://accounts.spotify.com/api/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+          },
+          body: 'grant_type=client_credentials'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to get Spotify token: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.access_token;
+      } catch (error) {
+        console.error('Error getting Spotify access token:', error);
+        return null;
+      }
+    }
+    
+    async function searchSpotify(query, type = 'track,album,playlist', limit = 1) {
+      try {
+        const token = await getSpotifyAccessToken();
+        if (!token) {
+          throw new Error('Failed to get Spotify access token');
+        }
+        
+        // Encode the query properly
+        const encodedQuery = encodeURIComponent(query);
+        const url = `https://api.spotify.com/v1/search?q=${encodedQuery}&type=${type}&limit=${limit}`;
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Spotify search failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Check for track results first (highest priority)
+        if (data.tracks && data.tracks.items && data.tracks.items.length > 0) {
+          const track = data.tracks.items[0];
+          return {
+            id: track.id,
+            name: track.name,
+            artist: track.artists[0].name,
+            album: track.album.name,
+            url: track.external_urls.spotify,
+            type: 'track'
+          };
+        } 
+        // Check for album results
+        else if (data.albums && data.albums.items && data.albums.items.length > 0) {
+          const album = data.albums.items[0];
+          return {
+            id: album.id,
+            name: album.name,
+            artist: album.artists[0].name,
+            url: album.external_urls.spotify,
+            type: 'album'
+          };
+        }
+        // Check for playlist results
+        else if (data.playlists && data.playlists.items && data.playlists.items.length > 0) {
+          const playlist = data.playlists.items[0];
+          return {
+            id: playlist.id,
+            name: playlist.name,
+            artist: playlist.owner.display_name,
+            url: playlist.external_urls.spotify,
+            type: 'playlist'
+          };
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error('Error searching Spotify:', error);
+        return null;
+      }
+    }
+    
+    // Function to extract song and artist using OpenAI
+    async function extractSongInfo(query, webSearchResults = "") {
+      try {
+        const systemPrompt = `You are a music identification assistant. Extract the most likely song title and artist name from the user's query and any provided web search results. 
+        
+IMPORTANT GUIDELINES:
+1. Analyze both the query and web search results for music references
+2. Look for mentions of songs, artists, albums, genres, eras, or musical themes
+3. Prioritize explicit song requests ("play X by Y") over general topics
+4. For general topics (e.g., "music for studying"), identify a specific relevant song
+5. Consider cultural context, time periods, and emotional themes
+
+ONLY respond in this exact JSON format:
+{"song": "SONG_TITLE", "artist": "ARTIST_NAME", "type": "track|album|playlist", "reason": "Brief explanation of why this is relevant"}
+
+If you can't identify both a song title and artist with reasonable confidence, respond with:
+{"song": null, "artist": null, "type": null, "reason": "Explanation of why no music could be identified"}
+
+Examples:
+1. For "Play Bohemian Rhapsody by Queen" → {"song": "Bohemian Rhapsody", "artist": "Queen", "type": "track", "reason": "Direct request for this specific song"}
+2. For "I want to listen to Yesterday" → {"song": "Yesterday", "artist": "The Beatles", "type": "track", "reason": "Clear request for this classic song"}
+3. For "Tell me about Michael Jackson and play Billie Jean" → {"song": "Billie Jean", "artist": "Michael Jackson", "type": "track", "reason": "Explicit song request within query about the artist"}
+4. For "Music for studying" → {"song": "Study Playlist", "artist": "Various Artists", "type": "playlist", "reason": "General request for study music is best served by a playlist"}
+5. For "What's the capital of France?" → {"song": null, "artist": null, "type": null, "reason": "Query is unrelated to music"}`;
+
+        const userPrompt = `Query: ${query}\n\nWeb search results: ${webSearchResults.substring(0, 1000)}`;
+
+        const response = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              {"role": "system", "content": systemPrompt},
+              {"role": "user", "content": userPrompt}
+            ],
+            model: 'openai',
+            jsonMode: true,
+            private: true
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Song extraction result:", result);
+        
+        // Check if we have valid song and artist
+        if (result && result.song && result.artist) {
+          // If it's a playlist request, modify the search query
+          if (result.type === 'playlist') {
+            return `${result.song} playlist ${result.artist}`;
+          }
+          return `${result.song} ${result.artist}`;
+        } else if (result && result.song) {
+          return result.song;
+        } else if (result && result.artist) {
+          return `${result.artist} popular songs`;
+        } else {
+          // If extraction failed, return the original query
+          return query;
+        }
+      } catch (error) {
+        console.error("Error extracting song info:", error);
+        return query; // Return original query if extraction fails
+      }
+    }
+    
+    // Replace the Spotify search function
+    async function trySpotifySearch(query, maxAttempts = 3, webSearchResults = "") {
+      let attempts = 0;
+      
+      // First, use OpenAI to extract the song and artist
+      const extractedQuery = await extractSongInfo(query, webSearchResults);
+      console.log(`Extracted music query: "${extractedQuery}" from original: "${query}"`);
+      
+      while (attempts < maxAttempts) {
+        attempts++;
+        try {
+          console.log(`Spotify API search attempt ${attempts} for: ${extractedQuery}`);
+          
+          // Try to find a track
+          const result = await searchSpotify(extractedQuery);
+          
+          if (result) {
+            console.log(`Spotify search successful:`, result);
+            return { 
+              error: false, 
+              result: { 
+                spotify_url: result.url, 
+                title: `${result.name} - ${result.artist}`, 
+                type: result.type,
+                id: result.id
+              }, 
+              attemptsMade: attempts 
+            };
+          } else {
+            console.log(`No results found for "${extractedQuery}" on attempt ${attempts}`);
+            
+            // If this is the last attempt and we have both song and artist, try just the song
+            if (attempts === maxAttempts - 1 && extractedQuery.includes(" ")) {
+              // Try with just the first part (likely the song title)
+              const simplifiedQuery = extractedQuery.split(" ")[0];
+              console.log(`Trying simplified search with: "${simplifiedQuery}"`);
+              const simpleResult = await searchSpotify(simplifiedQuery);
+              
+              if (simpleResult) {
+                console.log(`Simplified Spotify search successful:`, simpleResult);
+                return { 
+                  error: false, 
+                  result: { 
+                    spotify_url: simpleResult.url, 
+                    title: `${simpleResult.name} - ${simpleResult.artist}`, 
+                    type: simpleResult.type,
+                    id: simpleResult.id
+                  }, 
+                  attemptsMade: attempts 
+                };
+              }
+            }
+            
+            if (attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              continue;
+            }
+          }
+        } catch (error) {
+          console.error(`Spotify search attempt ${attempts} failed:`, error);
+          if (attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            continue;
+          }
+        }
+      }
+      
+      // If all attempts failed, return error
+      return { 
+        error: true, 
+        message: `No Spotify results found after ${attempts} attempts`, 
+        attemptsMade: attempts 
+      };
+    }
   </script>
 </body>
 </html>
