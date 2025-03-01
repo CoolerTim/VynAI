@@ -680,6 +680,8 @@
         height: 100vh;
         overflow: hidden;
       }
+      
+      /* Improved sidebar and memories panel styling */
       #sidebar, #memories-pane {
         display: none;
         position: fixed;
@@ -687,29 +689,49 @@
         width: 85%;
         height: 100vh;
         z-index: 30;
-        transition: transform var(--transition-speed) ease;
+        transition: transform 0.3s ease;
         padding: 15px;
         border-radius: 0;
+        overflow-y: auto;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
       }
+      
       #sidebar {
         left: 0;
         transform: translateX(-100%);
       }
+      
       #memories-pane {
         right: 0;
         transform: translateX(100%);
       }
-      #sidebar.open {
+      
+      #sidebar.open, #memories-pane.open {
         display: block;
         transform: translateX(0);
         width: 85%;
       }
-      #memories-pane.open {
-        display: block;
-        transform: translateX(0);
-        width: 85%;
+      
+      /* Improved close button styling */
+      .close-panel {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 35;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       }
-      /* Add overlay when sidebar or memories are open */
+      
+      /* Enhanced overlay */
       .overlay {
         display: none;
         position: fixed;
@@ -721,21 +743,28 @@
         z-index: 25;
         backdrop-filter: blur(3px);
       }
+      
       .overlay.active {
         display: block;
       }
+      
+      /* Main container improvements */
       #main-container {
         margin: 0;
         width: 100%;
         height: 100vh;
         max-width: none;
         padding: 0;
+        display: flex;
+        flex-direction: column;
       }
+      
+      /* Controls bar improvements */
       #controls {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 10px;
+        padding: 10px 15px;
         position: fixed;
         top: 0;
         left: 0;
@@ -744,132 +773,129 @@
         z-index: 20;
         border-radius: 0;
         background-color: var(--secondary-color);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       }
+      
       #controls label {
         display: none;
       }
-      #chat-container {
-        margin-top: 60px;
-        margin-bottom: 70px;
-        height: calc(100vh - 130px);
-        border: none;
-        border-radius: 0;
-        padding: 15px;
-        box-shadow: none;
-        overflow-y: auto;
+      
+      /* Fix for duplicate icons */
+      #sidebar-toggle, #memories-toggle {
+        font-size: 20px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
+      
+      #memories-toggle {
+        font-size: 22px;
+      }
+      
+      /* Chat container improvements */
+      #chat-container {
+        flex: 1;
+        margin-top: 60px;
+        margin-bottom: 130px;
+        padding: 15px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        max-height: none;
+      }
+      
+      /* Input area improvements */
       #input-area {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px;
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
-        min-height: 70px;
-        z-index: 20;
-        border-radius: 0;
+        padding: 10px;
         background-color: var(--secondary-color);
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
-        justify-content: space-between;
+        border-radius: 0;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 20;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+          "upload input send"
+          "preview preview toggle";
+        gap: 8px;
         align-items: center;
       }
-      #user-input {
-        width: calc(100% - 120px);
-        min-height: 40px;
-        padding: 8px 12px;
-        font-size: 14px;
-        order: 1;
-        display: block;
-      }
-      #preview-area {
-        width: 100%;
-        max-width: 100%;
-        justify-content: flex-start;
-        order: 3;
-        margin-top: 5px;
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 5px;
-      }
-      #send-button {
-        padding: 8px 16px;
-        font-size: 12px;
-        width: auto;
-        order: 2;
-      }
+      
       #file-input-label {
-        padding: 8px;
-        font-size: 12px;
-        width: auto;
-        order: 4;
+        grid-area: upload;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 5px;
-      }
-      .switch-container {
-        order: 5;
-        display: flex;
-        margin-right: 5px;
-      }
-      .switch-label {
-        display: none;
-      }
-      #new-chat-button {
-        padding: 8px;
-        font-size: 12px;
-        width: auto;
-      }
-      #sidebar-toggle, #memories-toggle {
-        padding: 8px;
-        font-size: 12px;
-        width: auto;
-      }
-      .message iframe {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 9;
-      }
-      /* Close button for sidebar and memories */
-      .close-panel {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: none;
-        border: none;
+        font-size: 20px;
+        background-color: var(--primary-color);
         color: var(--text-color);
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 31;
+        border-radius: 50%;
+        margin: 0;
       }
-      .close-panel:hover {
-        color: var(--primary-color);
+      
+      #user-input {
+        grid-area: input;
+        height: 40px;
+        padding: 8px 12px;
+        border-radius: 20px;
       }
-      /* Fix model selection dropdown on mobile */
-      .model-select-container {
-        display: none;
+      
+      #send-button {
+        grid-area: send;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        padding: 0;
+        border-radius: 50%;
       }
-      /* Add icons to buttons for better mobile UX */
-      #send-button::before {
-        content: "➤";
+      
+      #preview-area {
+        grid-area: preview;
+        width: 100%;
+        max-height: 100px;
+        overflow-y: auto;
+        padding: 5px 0;
+      }
+      
+      .switch-container {
+        grid-area: toggle;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
         margin-right: 5px;
       }
-      #file-input-label::before {
-        content: "📎";
-        margin-right: 5px;
+      
+      /* Message styling improvements */
+      .message {
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        max-width: 90%;
       }
-      #sidebar-toggle::before {
-        content: "☰";
+      
+      .message iframe, .message img {
+        max-width: 100%;
+        border-radius: 8px;
       }
-      #memories-toggle::before {
-        content: "🧠";
-      }
-      #new-chat-button::before {
-        content: "✚";
-        margin-right: 5px;
+      
+      /* Improved YouTube and Spotify embeds */
+      .youtube-embed, .spotify-embed {
+        width: 100% !important;
+        margin: 10px 0;
+        border-radius: 12px;
+        overflow: hidden;
       }
     }
     #sidebar-toggle, #memories-toggle {
@@ -894,15 +920,131 @@
       opacity: 1;
       transition: 0s;
     }
+    /* Additional styles for improved mobile UI */
+    .empty-message {
+      padding: 20px;
+      text-align: center;
+      color: var(--muted-color);
+      font-style: italic;
+    }
+    
+    /* Scroll indicators */
+    #chat-container.at-top::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.2), transparent);
+      pointer-events: none;
+    }
+    
+    #chat-container.at-bottom::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(to top, rgba(0,0,0,0.2), transparent);
+      pointer-events: none;
+    }
+    
+    /* Improved mobile chat cards */
+    .chat-card, .memory-card {
+      position: relative;
+      padding: 12px;
+      margin-bottom: 10px;
+      background-color: var(--primary-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .chat-card:hover, .memory-card:hover {
+      background-color: var(--hover-color);
+    }
+    
+    .chat-name, .memory-text {
+      margin: 0;
+      padding-right: 30px;
+      word-break: break-word;
+    }
+    
+    .menu-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-color);
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    
+    .menu-btn:hover {
+      background-color: var(--hover-color);
+    }
+    
+    .dropdown {
+      position: absolute;
+      top: 40px;
+      right: 5px;
+      background-color: var(--secondary-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+    
+    .dropdown button {
+      padding: 10px 15px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    
+    .dropdown button:hover {
+      background-color: var(--hover-color);
+    }
+    
+    /* Mobile keyboard adjustments */
+    body.keyboard-open #chat-container {
+      margin-bottom: 180px;
+    }
   </style>
 </head>
 <body>
-  <div id="sidebar"><h2 id="sidebar-label">History</h2><button class="close-panel">&times;</button></div>
-  <div id="memories-pane"><h2 id="memories-label">Memories</h2><button class="close-panel">&times;</button></div>
+  <div id="sidebar">
+    <h2 id="sidebar-label">History</h2>
+    <button class="close-panel" aria-label="Close history panel">&times;</button>
+    <div class="sidebar-content"></div>
+  </div>
+  
+  <div id="memories-pane">
+    <h2 id="memories-label">Memories</h2>
+    <button class="close-panel" aria-label="Close memories panel">&times;</button>
+    <div class="memories-content"></div>
+  </div>
+  
   <div class="overlay"></div>
+  
   <div id="main-container">
     <div id="controls">
-      <button id="sidebar-toggle">☰</button>
+      <button id="sidebar-toggle" aria-label="Toggle history">☰</button>
       <div class="model-select-container">
         <label for="model-select-button">Model:</label>
         <button class="model-select-button" id="model-select-button">Pro (Advanced)</button>
@@ -912,13 +1054,16 @@
         </div>
       </div>
       <button id="new-chat-button">New Chat</button>
-      <button id="memories-toggle">🧠</button>
+      <button id="memories-toggle" aria-label="Toggle memories">🧠</button>
     </div>
+    
     <div id="chat-container"></div>
+    
     <div id="input-area">
-      <label for="file-input" id="file-input-label">📎 Upload</label>
+      <label for="file-input" id="file-input-label" aria-label="Upload files">📎</label>
       <input type="file" id="file-input" accept="image/*, .txt, .pdf, .doc, .docx, .ppt, .pptx" multiple>
       <textarea id="user-input" placeholder="Type your message..."></textarea>
+      <button id="send-button" aria-label="Send message">➤</button>
       <div id="preview-area"></div>
       <div class="switch-container">
         <label class="switch-label">Web Search</label>
@@ -927,7 +1072,6 @@
           <span class="slider round"></span>
         </label>
       </div>
-      <button id="send-button">Send ➤</button>
     </div>
   </div>
 
@@ -955,6 +1099,7 @@
     }
 
     function addMessageToChat(role, content, isNew = true) {
+      const chatContainer = document.getElementById('chat-container');
       const messageDiv = document.createElement('div');
       messageDiv.classList.add('message', role);
       
@@ -976,7 +1121,7 @@
               if (isNew) {
                 lineSpan.style.opacity = '0';
                 lineSpan.style.animation = `fadeIn 0.3s forwards`;
-                lineSpan.style.animationDelay = `${index * 0.1}s`;
+                lineSpan.style.animationDelay = `${index * 0.05}s`;
               } else {
                 lineSpan.style.opacity = '1';
               }
@@ -1016,7 +1161,7 @@
             if (isNew) {
               lineSpan.style.opacity = '0';
               lineSpan.style.animation = `fadeIn 0.3s forwards`;
-              lineSpan.style.animationDelay = `${index * 0.1}s`;
+              lineSpan.style.animationDelay = `${index * 0.05}s`;
             } else {
               lineSpan.style.opacity = '1';
             }
@@ -1039,14 +1184,29 @@
           } else if (item.type === 'image_url') {
             const img = document.createElement('img');
             img.src = item.image_url.url;
+            img.alt = "Uploaded image";
+            img.loading = "lazy";
             contentDiv.appendChild(img);
           }
         });
       }
+      
       messageDiv.appendChild(contentDiv);
-      document.getElementById('chat-container').appendChild(messageDiv);
-      messageDiv.scrollIntoView({ behavior: 'smooth' });
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub, messageDiv]);
+      chatContainer.appendChild(messageDiv);
+      
+      // Scroll to the new message with a slight delay to ensure rendering
+      setTimeout(() => {
+        // On mobile, use a smoother scroll
+        if (window.innerWidth <= 480) {
+          messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        } else {
+          messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Process math expressions
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, messageDiv]);
+      }, 50);
+      
       return messageDiv;
     }
 
@@ -1626,15 +1786,26 @@ Make the search as detailed as possible with at least 10-15 distinct facts when 
     }
 
     function updateChatHistory() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.innerHTML = '<h2 id="sidebar-label">History</h2>';
+      const sidebarContent = document.querySelector('.sidebar-content');
+      if (!sidebarContent) return;
+      
+      sidebarContent.innerHTML = '';
       const recentChats = chatHistory.slice(-15).reverse();
+      
+      if (recentChats.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.classList.add('empty-message');
+        emptyMessage.textContent = 'No chat history yet';
+        sidebarContent.appendChild(emptyMessage);
+        return;
+      }
+      
       recentChats.forEach((chat, index) => {
         const chatCard = document.createElement('div');
         chatCard.classList.add('chat-card');
         chatCard.innerHTML = `
           <p class="chat-name">${chat.name}</p>
-          <button class="menu-btn">⋮</button>
+          <button class="menu-btn" aria-label="Chat options">⋮</button>
           <div class="dropdown">
             <button class="delete-btn">Delete</button>
           </div>
@@ -1646,6 +1817,11 @@ Make the search as detailed as possible with at least 10-15 distinct facts when 
         chatCard.addEventListener('click', (e) => {
           if (e.target !== menuBtn && e.target !== deleteBtn) {
             loadChat(chat.messages, chatHistory.length - 1 - index);
+            
+            // Close sidebar on mobile after selecting a chat
+            if (window.innerWidth <= 480) {
+              closeAllPanels();
+            }
           }
         });
 
@@ -1676,20 +1852,31 @@ Make the search as detailed as possible with at least 10-15 distinct facts when 
           }
         });
 
-        sidebar.appendChild(chatCard);
+        sidebarContent.appendChild(chatCard);
       });
     }
 
     function updateMemoriesPane() {
-      const memoriesPane = document.getElementById('memories-pane');
-      memoriesPane.innerHTML = '<h2 id="memories-label">Memories</h2>';
+      const memoriesContent = document.querySelector('.memories-content');
+      if (!memoriesContent) return;
+      
+      memoriesContent.innerHTML = '';
       const recentMemories = memories.slice(-15).reverse();
+      
+      if (recentMemories.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.classList.add('empty-message');
+        emptyMessage.textContent = 'No memories saved yet';
+        memoriesContent.appendChild(emptyMessage);
+        return;
+      }
+      
       recentMemories.forEach((memory, index) => {
         const memoryCard = document.createElement('div');
         memoryCard.classList.add('memory-card');
         memoryCard.innerHTML = `
           <p class="memory-text">${memory.content}</p>
-          <button class="menu-btn">⋮</button>
+          <button class="menu-btn" aria-label="Memory options">⋮</button>
           <div class="dropdown">
             <button class="delete-btn">Delete</button>
           </div>
@@ -1720,18 +1907,27 @@ Make the search as detailed as possible with at least 10-15 distinct facts when 
           }
         });
 
-        memoriesPane.appendChild(memoryCard);
+        memoriesContent.appendChild(memoryCard);
       });
     }
 
     function loadChat(messages, index) {
       conversation = messages.slice();
       currentChatIndex = index;
-      document.getElementById('chat-container').innerHTML = '';
+      
+      const chatContainer = document.getElementById('chat-container');
+      chatContainer.innerHTML = '';
+      
+      // Add messages to the chat
       conversation.forEach(msg => addMessageToChat(msg.role, msg.content, false));
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('memories-pane').classList.remove('open');
-      document.getElementById('main-container').classList.remove('shifted-left', 'shifted-right');
+      
+      // Close panels
+      closeAllPanels();
+      
+      // Scroll to the bottom of the chat
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 100);
     }
 
     async function saveOrUpdateChat() {
@@ -1780,68 +1976,160 @@ Make the search as detailed as possible with at least 10-15 distinct facts when 
       const overlay = document.querySelector('.overlay');
       const closePanelButtons = document.querySelectorAll('.close-panel');
       const inputArea = document.getElementById('input-area');
+      const sidebarContent = document.querySelector('.sidebar-content');
+      const memoriesContent = document.querySelector('.memories-content');
+      const isMobile = window.innerWidth <= 480;
 
       // Initialize the UI
       updateChatHistory();
       updateMemoriesPane();
       
-      // Handle sidebar and memories toggle
-      sidebarToggle.addEventListener('click', function() {
-      sidebar.classList.toggle('open');
-      if (sidebar.classList.contains('open')) {
-          memoriesPane.classList.remove('open');
-        mainContainer.classList.add('shifted-left');
-          mainContainer.classList.remove('shifted-right');
-          overlay.classList.add('active');
-      } else {
-        mainContainer.classList.remove('shifted-left');
-          overlay.classList.remove('active');
-        }
-      });
-
-      memoriesToggle.addEventListener('click', function() {
-      memoriesPane.classList.toggle('open');
-      if (memoriesPane.classList.contains('open')) {
-          sidebar.classList.remove('open');
-        mainContainer.classList.add('shifted-right');
-          mainContainer.classList.remove('shifted-left');
-          overlay.classList.add('active');
-      } else {
-        mainContainer.classList.remove('shifted-right');
-          overlay.classList.remove('active');
-        }
-      });
-
-      // Close panels when clicking on overlay
-      overlay.addEventListener('click', function() {
+      // Function to close all panels
+      function closeAllPanels() {
         sidebar.classList.remove('open');
         memoriesPane.classList.remove('open');
         mainContainer.classList.remove('shifted-left', 'shifted-right');
         overlay.classList.remove('active');
+        
+        // Enable scrolling on main content
+        document.body.style.overflow = '';
+        chatContainer.style.overflow = 'auto';
+      }
+      
+      // Handle sidebar toggle
+      sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('open');
+        if (sidebar.classList.contains('open')) {
+          memoriesPane.classList.remove('open');
+          mainContainer.classList.add('shifted-left');
+          mainContainer.classList.remove('shifted-right');
+          overlay.classList.add('active');
+          
+          // Disable scrolling on main content for mobile
+          if (isMobile) {
+            document.body.style.overflow = 'hidden';
+            chatContainer.style.overflow = 'hidden';
+          }
+        } else {
+          mainContainer.classList.remove('shifted-left');
+          overlay.classList.remove('active');
+          
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+          chatContainer.style.overflow = 'auto';
+        }
       });
+
+      // Handle memories toggle
+      memoriesToggle.addEventListener('click', function() {
+        memoriesPane.classList.toggle('open');
+        if (memoriesPane.classList.contains('open')) {
+          sidebar.classList.remove('open');
+          mainContainer.classList.add('shifted-right');
+          mainContainer.classList.remove('shifted-left');
+          overlay.classList.add('active');
+          
+          // Disable scrolling on main content for mobile
+          if (isMobile) {
+            document.body.style.overflow = 'hidden';
+            chatContainer.style.overflow = 'hidden';
+          }
+        } else {
+          mainContainer.classList.remove('shifted-right');
+          overlay.classList.remove('active');
+          
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+          chatContainer.style.overflow = 'auto';
+        }
+      });
+
+      // Close panels when clicking on overlay
+      overlay.addEventListener('click', closeAllPanels);
 
       // Close panel buttons
       closePanelButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const panel = this.parentElement;
-          panel.classList.remove('open');
-          mainContainer.classList.remove('shifted-left', 'shifted-right');
-          overlay.classList.remove('active');
+        button.addEventListener('click', closeAllPanels);
+      });
+
+      // Add a function to scroll to the bottom of the chat
+      function scrollToBottom() {
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+      
+      // Ensure chat container scrolls to bottom when new messages are added
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            scrollToBottom();
+          }
         });
+      });
+      
+      observer.observe(chatContainer, { childList: true });
+      
+      // Handle window resize to adjust chat container
+      window.addEventListener('resize', function() {
+        // Update isMobile status
+        const wasMobile = isMobile;
+        const newIsMobile = window.innerWidth <= 480;
+        
+        // Only take action if mobile status changed
+        if (wasMobile !== newIsMobile) {
+          location.reload(); // Reload to apply correct layout
+        } else {
+          // Just adjust margins and scroll position
+          if (newIsMobile) {
+            chatContainer.style.marginBottom = (inputArea.offsetHeight + 10) + 'px';
+          }
+          scrollToBottom();
+        }
       });
 
       // Handle input area on mobile
-      if (window.innerWidth <= 480) {
+      if (isMobile) {
+        // Adjust textarea height based on content
+        userInput.addEventListener('input', function() {
+          this.style.height = 'auto';
+          const newHeight = Math.min(this.scrollHeight, 100);
+          this.style.height = newHeight + 'px';
+          
+          // Adjust chat container bottom margin
+          chatContainer.style.marginBottom = (inputArea.offsetHeight + 10) + 'px';
+        });
+        
+        // Handle focus/blur for better mobile experience
         userInput.addEventListener('focus', function() {
+          // Scroll chat to bottom when focusing on input
+          setTimeout(scrollToBottom, 300);
+          
           if (previewArea.children.length > 0) {
             previewArea.style.display = 'flex';
           }
+          
+          // Add class to body for keyboard open state
+          document.body.classList.add('keyboard-open');
         });
         
         userInput.addEventListener('blur', function() {
           if (previewArea.children.length === 0) {
             previewArea.style.display = 'none';
           }
+          
+          // Remove keyboard open class
+          document.body.classList.remove('keyboard-open');
+        });
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
+          setTimeout(function() {
+            // Adjust chat container bottom margin
+            chatContainer.style.marginBottom = (inputArea.offsetHeight + 10) + 'px';
+            
+            // Scroll to bottom after orientation change
+            scrollToBottom();
+          }, 300);
         });
       }
 
