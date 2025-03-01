@@ -1038,9 +1038,9 @@ ${existingMemories}`
         try {
           let systemPrompt;
           if (isYouTube) {
-            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, search YouTube for ONE highly relevant, working, and embeddable video related to "${userText}". Prioritize videos from famous channels or with high view counts. Return the result in this exact format: {"youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID"}. If no suitable video is found, return {"youtube_url": null}.`;
+            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, search YouTube for ONE highly relevant, working, and embeddable video related to "${userText}". Prioritize videos from famous channels or with high view counts. Return the result in this exact format: {"youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID", "title": "VIDEO_TITLE"}. If no suitable video is found, return {"youtube_url": null}.`;
           } else {
-            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, conduct a comprehensive and detailed web research for the given prompt in the language detected as "${language}". Provide current information (as of ${currentDate} or later, if available), including precise facts, background details, and relevant insights. Ensure each fact is accompanied by a source URL from trustworthy, up-to-date references in the format [NUMBER]: [description](https://source.url). Return the result as plain text.`;
+            systemPrompt = `If you have no internet access, return exactly "XNoInternetX". Otherwise, conduct a comprehensive and detailed web research for the given prompt in the language detected as "${language}". Provide current information (as of ${currentDate} or later, if available), including precise facts, background details, and relevant insights. Ensure each fact is accompanied by a source URL from trustworthy, up-to-date references. Return you answer in an array with two keys each: Fact and Source (the source must be the exact URL where the fact came from!). Make the search as detailed as possible and sum it up as short as possible without removing any details! Newer write anything without checking the sources for trust!`;
           }
           
           const searchResponse = await fetch('https://text.pollinations.ai/', {
@@ -1053,7 +1053,7 @@ ${existingMemories}`
               ],
               model: 'searchgpt',
               seed: seed,
-              jsonMode: isYouTube,
+              jsonMode: true,
               private: true
             })
           });
@@ -1444,7 +1444,7 @@ ${existingMemories}`
           "role": "system",
           "content": isMathRequest
             ? `${memoryInstructions}\nAnswer the user's math question in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is explicitly requested. Use LaTeX notation (e.g., $$...$$) for all equations, ensuring proper rendering with no extra spacing or paragraphs around math. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
-            : `${memoryInstructions}\nYou have access to the following search results: ${combinedResults}. Use this information to answer the user's question with current details (as of ${currentDate} or later, if available). Mark nearly every fact with a compact source reference as "[Q[NUMBER]]" (e.g., "Tesla produced 10,000 Cybertrucks in 2025 Q2[Q1]"). Number sources sequentially. Ensure the [Q[NUMBER]] in the text directly links to the corresponding URL in the sources list (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
+            : `${memoryInstructions}\nYou have access to the following search results: ${combinedResults}. Use this information to answer the user's question with current details (as of ${currentDate} or later, if available). Mark nearly every fact with a compact source reference as "[Q[NUMBER]]" (e.g., "Tesla produced 10,000 Cybertrucks in 2025 Q2"). Number sources sequentially. Ensure the [Q[NUMBER]] in the text directly links to the corresponding URL in the sources list (example: [Q1](https://tesla.com/news)). For mathematical questions, answer in a single, concise line (e.g., "$$3 - 6 = -3$$") unless more explanation is requested. Use LaTeX notation (e.g., $$...$$) for equations with no extra spacing. Verify each step and double-check the final result for accuracy. User language: ${userLanguage}, City: ${userCity}. Memories: ${memoryContext}. You can see, edit, delete, or add to these memories based on the conversation.`
         };
       } else {
         systemMessage = {
